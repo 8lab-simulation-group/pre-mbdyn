@@ -1,0 +1,57 @@
+#--------------------------------------------------------------------------------
+#---------------------- TOWER PARAMETERS ----------------------------------------
+NTwInpSt    11        #     - Number of input stations to specify tower geometry
+NTwInpMdSh   6        #     - Number of input stations to spesify tower mode shapes
+CalcTMode    0        #    - Calculate tower mode shapes internally {T: ignore mode shapes from below, F: use mode shapes from below} [CURRENTLY IGNORED] (flag)
+TwrFADmp1    1.0      #    - Tower 1st fore-aft mode structural damping ratio (%)
+TwrFADmp2    1.0      #    - Tower 2nd fore-aft mode structural damping ratio (%)
+TwrSSDmp1    1.0      #    - Tower 1st side-to-side mode structural damping ratio (%)
+TwrSSDmp2    1.0      #    - Tower 2nd side-to-side mode structural damping ratio (%)
+#---------------------- TOWER ADJUSTMUNT FACTORS --------------------------------
+FAStTunr1   1.0      #    - Tower fore-aft modal stiffness tuner, 1st mode (-)
+FAStTunr2   1.0      #    - Tower fore-aft modal stiffness tuner, 2nd mode (-)
+SSStTunr1   1.0      #    - Tower side-to-side stiffness tuner, 1st mode (-)
+SSStTunr2   1.0      #    - Tower side-to-side stiffness tuner, 2nd mode (-)
+AdjTwMa     1.0      #      - Factor to adjust tower mass density (-)
+AdjFASt     1.0      #      - Factor to adjust tower fore-aft stiffness (-)
+AdjSSSt     1.0      #      - Factor to adjust tower side-to-side stiffness (-)
+#---------------------- DISTRIBUTED TOWER PROPERTIES ----------------------------
+HtFract  TMassDen  TwFAStif   TwSSStif   TwGJStif   TwEAStif   TwFAIner  TwSSIner  TwFAcgOf  TwSScgOf
+#(-)      (kg/m)    (Nm^2)     (Nm^2)     (Nm^2)     (N)        (kg m)    (kg m)    (m)       (m)
+0.0      4667.00   603.903E9  603.903E9  464.718E9  115.302E9  24443.7   24443.7   0.0       0.0
+0.1      4345.28   517.644E9  517.644E9  398.339E9  107.354E9  20952.2   20952.2   0.0       0.0
+0.2      4034.76   440.925E9  440.925E9  339.303E9   99.682E9  17847.0   17847.0   0.0       0.0
+0.3      3735.44   373.022E9  373.022E9  287.049E9   92.287E9  15098.5   15098.5   0.0       0.0
+0.4      3447.32   313.236E9  313.236E9  241.043E9   85.169E9  12678.6   12678.6   0.0       0.0
+0.5      3170.40   260.897E9  260.897E9  200.767E9   78.328E9  10560.1   10560.1   0.0       0.0
+0.6      2904.69   215.365E9  215.365E9  165.729E9   71.763E9   8717.2    8717.2   0.0       0.0
+0.7      2650.18   176.028E9  176.028E9  135.458E9   65.475E9   7124.9    7124.9   0.0       0.0
+0.8      2406.88   142.301E9  142.301E9  109.504E9   59.464E9   5759.8    5759.8   0.0       0.0
+0.9      2174.77   113.630E9  113.630E9   87.441E9   53.730E9   4599.3    4599.3   0.0       0.0
+1.0      1953.87    89.488E9   89.488E9   68.863E9   48.272E9   3622.1    3622.1   0.0       0.0
+#---------------------- TOWER FORE-AFT MODE SHAPES ------------------------------
+TwFAM1Sh   0.0000   # (1) - Mode 1, coefficient of x^1 term
+TwFAM1Sh   0.8689   # (2) - Mode 1, coefficient of x^2 term
+TwFAM1Sh   0.2205   # (3) -       , coefficient of x^3 term
+TwFAM1Sh  -0.0908   # (4) -       , coefficient of x^4 term
+TwFAM1Sh   0.1167   # (5) -       , coefficient of x^5 term
+TwFAM1Sh  -0.1154   # (6) -       , coefficient of x^6 term
+TwFAM2Sh   0.0000   # (1) - Mode 2, coefficient of x^1 term
+TwFAM2Sh  42.5859   # (2) - Mode 2, coefficient of x^2 term
+TwFAM2Sh -18.6419   # (3) -       , coefficient of x^3 term
+TwFAM2Sh -20.3570   # (4) -       , coefficient of x^4 term
+TwFAM2Sh -23.2686   # (5) -       , coefficient of x^5 term
+TwFAM2Sh  20.6816   # (6) -       , coefficient of x^6 term
+# ------------------------ TOWER SIDE-TO-SIDE MODE SHAPES --------------------------
+TwSSM1Sh   0.0000   # (1) - Mode 1, coefficient of x^1 term
+TwSSM1Sh   0.8340   # (2) - Mode 1, coefficient of x^2 term
+TwSSM1Sh   0.2216   # (3) -       , coefficient of x^3 term
+TwSSM1Sh  -0.0571   # (4) -       , coefficient of x^4 term
+TwSSM1Sh   0.0934   # (5) -       , coefficient of x^5 term
+TwSSM1Sh  -0.0918   # (6) -       , coefficient of x^6 term
+TwSSM2Sh   0.0000   # (1) - Mode 2, coefficient of x^1 term
+TwSSM2Sh  60.2285   # (2) - Mode 2, coefficient of x^2 term
+TwSSM2Sh -27.5868   # (3) -       , coefficient of x^3 term
+TwSSM2Sh -30.3887   # (4) -       , coefficient of x^4 term
+TwSSM2Sh -33.6738   # (5) -       , coefficient of x^5 term
+TwSSM2Sh  32.4208   # (6) -       , coefficient of x^6 term

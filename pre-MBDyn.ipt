@@ -1,0 +1,50 @@
+#--------------------------------------------------------------------------------
+#---------------------- SIMULATION CONTROL --------------------------------------
+InitialTime    0.0      #   - Initial time (s)
+FinalTime    300.0      #    - FinalTime (s)
+DT            0.0125   #           - Integration time step (s) 
+NumBl         3        #        - Number of blades (-)
+#---------------------- TURBINE CONTROL -----------------------------------------
+#---------------------- ENVIRONMENTAL CONDITIONS --------------------------------
+Gravity       9.80665  #      - Gravitational acceleration (m/s^2)
+#---------------------- INITIAL CONDITIONS --------------------------------------
+ RotSpeed     12.1      # RotSpeed    - Initial or fixed rotor speed (rpm)
+#---------------------- TURBINE CONFIGURATION -----------------------------------
+TipRad  63.0        #       - The distance from the rotor apex to the blade tip (meters)
+HubRad   1.5        #       - The distance from the rotor apex to the blade root (meters)
+OverHang  -5.01910  #     - Distance from yaw axis to rotor apex [3 blades] or teeter pin [2 blades] (meters)
+NacCMxn   1.9       #      - Downwind distance from the tower-top to the nacelle CM (meters)
+NacCMyn   0.0       #      - Lateral  distance from the tower-top to the nacelle CM (meters)
+NacCMzn   1.75      #      - Vertical distance from the tower-top to the nacelle CM (meters)
+TowerHt  87.6       #      - Height of tower above ground level [onshore] or MSL [offshore] (meters)
+Twr2Shft   1.96256  #     - Vertical distance from the tower-top to the rotor shaft (meters)
+ShftTilt  -5.0      #     - Rotor shaft tilt angle (degrees)
+PreCone  -2.5       # (1)  - Blade 1 cone angle (degrees)
+PreCone  -2.5       # (2)  - Blade 2 cone angle (degrees)
+PreCone  -2.5       # (3)  - Blade 3 cone angle (degrees) [unused for 2 blades]
+#---------------------- MASS AND INERTIA ----------------------------------------
+NacMass   240.00e3   #      - Nacelle mass (kg)
+HubMass    56.78e3   #      - Hub mass (kg)
+NacYIner  2607.89e3   #     - Nacelle inertia about yaw axis (kg m^2)
+GenIner   534.116    #      - Generator inertia about HSS (kg m^2)
+HubIner   115.926e3  #      - Hub inertia about rotor axis [3 blades] or teeter axis [2 blades] (kg m^2)
+#---------------------- DRIVETRAIN ----------------------------------------------
+GBoxEff   100.0      #      - Gearbox efficiency (%)
+GenEff    94.4      #       - Generator efficiency [ignored by the Thevenin and user-defined generator models] (%)
+GBRatio    97.0      #      - Gearbox ratio (-)
+DTTorSpr   867.637e6  #     - Drivetrain torsional spring (N-m/rad)
+DTTorDmp     6.215e6  #     - Drivetrain torsional damper (N-m/(rad/s))
+#---------------------- PLATFORM ------------------------------------------------
+PtfmFile   NREL5MW_OC3Hywind_Ptfm.dat    # PtfmFile    - Name of file containing platform properties 
+PtfmLdFile NREL5MW_OC3Hywind_PtfmLd.ipt  # PtfmLdFile  - Name of file containing platform load properties
+#---------------------- TOWER ---------------------------------------------------
+TwrNodes  20        #     - Number of tower nodes used for analysis (-)
+TwrFile   NRELOffshrBsline5MW_Tower_OC3Hywind.dat        #      - Name of file containing tower properties 
+#---------------------- NACELLE-YAW ---------------------------------------------
+YawSpr   9028.32e6   #       - Nacelle-yaw spring constant (N-m/rad)
+YawDamp     19.16e6   #      - Nacelle-yaw damping constant (N-m/(rad/s))
+#---------------------- BLADE ---------------------------------------------------
+BldNodes  17        #     - Number of each blade nodes used for analysis (-)
+BldFile   NRELOffshrBsline5MW_Blade.dat                 #   - Name of file containing properties for blade  
+#---------------------- OUTPUT -------------------------------------------------
+# note : todo インプットファイルに空白の行があると誤動作を起こすので、/nのみの行は読み込まないように修正する

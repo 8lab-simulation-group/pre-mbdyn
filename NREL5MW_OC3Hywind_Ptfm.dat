@@ -1,0 +1,24 @@
+#--------------------------------------------------------------------------------
+#---------------------- FEATURE FLAGS (CONT) ------------------------------------
+PtfmSgDOF   1        #    - Platform horizontal surge translation DOF (flag)
+PtfmSwDOF   1        #    - Platform horizontal sway translation DOF (flag)
+PtfmHvDOF   1        #    - Platform vertical heave translation DOF (flag)
+PtfmRDOF    1        #     - Platform roll tilt rotation DOF (flag)
+PtfmPDOF    1        #     - Platform pitch tilt rotation DOF (flag)
+PtfmYDOF    1        #     - Platform yaw rotation DOF (flag)
+#---------------------- INITIAL CONDITIONS (CONT) -------------------------------
+PtfmSurge   0.0      #    - Initial or fixed horizontal surge translational displacement of platform (meters)
+PtfmSway    0.0      #     - Initial or fixed horizontal sway translational displacement of platform (meters)
+PtfmHeave   0.0      #    - Initial or fixed vertical heave translational displacement of platform (meters)
+PtfmRoll    0.0      #     - Initial or fixed roll tilt rotational displacement of platform (degrees)
+PtfmPitch   0.0      #    - Initial or fixed pitch tilt rotational displacement of platform (degrees)
+PtfmYaw     0.0      #      - Initial or fixed yaw rotational displacement of platform (degrees)
+#---------------------- TURBINE CONFIGURATION (CONT) ----------------------------
+TwrDraft  -10.0      #     - Downward distance from the ground level [onshore] or MSL [offshore] to the tower base platform connection (meters)
+PtfmCM     89.9155   #       - Downward distance from the ground level [onshore] or MSL [offshore] to the platform CM (meters)
+PtfmRef    0.0       #      - Downward distance from the ground level [onshore] or MSL [offshore] to the platform reference point (meters)
+#---------------------- MASS AND INERTIA (CONT) ---------------------------------
+PtfmMass  7466.33E3   #     - Platform mass (kg)
+PtfmRIner 4229.23E6   #    - Platform inertia for roll tilt rotation about the platform CM (kg m^2)
+PtfmPIner 4229.23E6   #    - Platform inertia for pitch tilt rotation about the platform CM (kg m^2)
+PtfmYIner  164.23E6   #    - Platfrom inertia for yaw rotation about the platform CM (kg m^2)
