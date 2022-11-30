@@ -4,6 +4,7 @@
 class Beam3 : public Element {
     private:
         double a;
+        double b;
     public:
 
     
