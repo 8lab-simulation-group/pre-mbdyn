@@ -1,4 +1,5 @@
 #include "Platform.h"
+#include <cmath>
 
 Platform::Platform(int label, InputData *ID) 
 : platform_label(label), inputdata(ID) // const メンバ変数を引数で初期化
@@ -116,6 +117,7 @@ Platform::set_deformablejoint() {
         int curr_node2 = nodes[i+1].get_label();
 
         int joint_label = platform_label + i + 1;
+
         // jointの位置を指定する際の座標系、node1の座標系を使用
         Frame base_frame = nodes[i].get_frame();
         // その座標系からのoffset拘束点はnode1の場所とするので、offsetはなし
@@ -125,13 +127,50 @@ Platform::set_deformablejoint() {
 
         Mat6x6d kMatrix = zero6x6;
         Mat6x6d Cmatrix = zero6x6;
-        // set Kmatrix and Cmatrix
-        kMatrix.set(0,0) = 0;
-        kMatrix.set(0,1) = 0;
-        kMatrix.set(0,2) = 0;
-        kMatrix.set(0,3) = 0;
-        kMatrix.set(0,4) = 0;
+        
+        // Tower　node間距離
+        double TmpLength = 0.5*(inputdata ->get_value("ELENGTH", i+1)+inputdata->get_value("ELENGTH", (i+2)));
+        double TmpLength2 = TmpLength*TmpLength;
+        double TmpLength3 = TmpLength2*TmpLength;
+        // 剛性
+        double StiffPEA1 = inputdata ->get_value("EAStif", i+1);
+        double StiffPEA2 = inputdata ->get_value("EAStif", i+2);
+        double StiffPSS1 = inputdata ->get_value("SSStif", i+1);
+        double StiffPSS2 = inputdata ->get_value("SSStif", i+2);
+        double StiffPFA1 = inputdata ->get_value("FAStif", i+1);
+        double StiffPFA2 = inputdata ->get_value("FAStif", i+2);
+        double StiffPGJ1 = inputdata ->get_value("GJStif", i+1);
+        double StiffPGJ2 = inputdata ->get_value("GJStif", i+2);
 
+        //double CRationTSS = 0.01*(inputdata ->get_value("TwrSSDmp1"))/(M_PI*(inputdata ->get_value("CornerFreq")));
+        //double CRationTFA = 0.01*(inputdata ->get_value("TwrFADmp1"))/(M_PI*(inputdata ->get_value("CornerFreq")));
+        //ベータ減衰　CRatio = 減衰係数/(π*固有周波数)
+        double CRatioTSS = 0.01*(inputdata ->get_value("TwrSSDmp1"))/(M_PI*1.337148664188484);
+        double CRatioTFA = 0.01*(inputdata ->get_value("TwrFADmp1"))/(M_PI*1.337148664188484);
+        double CRatioTEA = 1.0;
+        double CRatioTGJ = 1.0;
+
+        // set Kmatrix and Cmatrix
+        kMatrix.set(0,0) =  0.001*0.5*(StiffPEA1+StiffPEA2)/TmpLength;
+        kMatrix.set(1,1) =  0.001*6.0*(StiffPSS1+StiffPSS2)/TmpLength3;
+        kMatrix.set(2,2) =  0.001*6.0*(StiffPFA1+StiffPFA2)/TmpLength3;
+        kMatrix.set(3,3) =  0.001*0.5*(StiffPGJ1+StiffPGJ2)/TmpLength;
+        kMatrix.set(4,4) =  0.001*(3.0*StiffPFA1+StiffPFA2)/TmpLength;
+        kMatrix.set(5,5) =  0.001*(3.0*StiffPSS1+StiffPSS2)/TmpLength;
+        kMatrix.set(1,5) = -0.001*2.0*(2.0*StiffPSS1+StiffPSS2)/TmpLength2;
+        kMatrix.set(2,4) =  0.001*2.0*(2.0*StiffPFA1+StiffPFA2)/TmpLength2;
+        kMatrix.set(5,1) = kMatrix.set(1,5);
+        kMatrix.set(4,2) = kMatrix.set(2,4);
+        Cmatrix.set(0,0) = kMatrix.set(0,0)*CRatioTEA;
+        Cmatrix.set(1,1) = kMatrix.set(1,1)*CRatioTSS;
+        Cmatrix.set(2,2) = kMatrix.set(2,2)*CRatioTFA;
+        Cmatrix.set(3,3) = kMatrix.set(3,3)*CRatioTGJ;
+        Cmatrix.set(4,4) = kMatrix.set(4,4)*CRatioTFA;
+        Cmatrix.set(5,5) = kMatrix.set(5,5)*CRatioTSS;
+        Cmatrix.set(1,5) = kMatrix.set(1,5)*CRatioTSS;
+        Cmatrix.set(2,4) = kMatrix.set(2,4)*CRatioTFA;
+        Cmatrix.set(5,1) = Cmatrix.set(1,5);
+        Cmatrix.set(1,5) = Cmatrix.set(1,5);
 
         deformable_joints[i] = DeformableJoint(joint_label, curr_node1, curr_node2, joint_position, kMatrix,Cmatrix, 0);
     }
