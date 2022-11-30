@@ -2,7 +2,7 @@
 #define __BLADE_H_INCLUDE__
 
 class Blade {
-    
+    public:
 }
 
 
