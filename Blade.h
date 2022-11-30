@@ -3,7 +3,7 @@
 
 class Blade {
     public:
-}
+};
 
 
 #endif
