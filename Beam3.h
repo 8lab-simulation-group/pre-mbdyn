@@ -3,7 +3,7 @@
 
 class Beam3 : public Element {
     private:
-
+        double a;
     public:
 
     
