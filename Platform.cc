@@ -1,7 +1,8 @@
 #include "Platform.h"
 #include <cmath>
+#include <math.h>
 
-Platform::Platform(int label, InputData *ID) 
+Platform::Platform(int label, InputData *ID)
 : platform_label(label), inputdata(ID) // const メンバ変数を引数で初期化
 {
     num_reference = inputdata->get_value("NPtfmDivH");
@@ -71,6 +72,7 @@ Platform::set_reference() {
     //上記の分でnodeの定義に使うrefereceが出力される。仮に追加で必要になったら、以下の方法で追加できる。
     // reference.push_back( ReferenceFrame(********) )
 }
+
 void
 Platform::set_nodes(){
     for(int i=0; i<num_nodes; i++) {
@@ -83,6 +85,7 @@ Platform::set_nodes(){
         nodes[i] = Node(curr_node_label, references[i], offset_null, 1);
     }
 }
+
 void
 Platform::set_rigidbodies() {
     for(int i=0; i<num_rigidbodies; i++) {
@@ -106,13 +109,244 @@ Platform::set_rigidbodies() {
         //最後の引数はMBDynの出力制御用、現在rigidbodyの出力は特に見ていない
         rigidbodies[i] = RigidBody(curr_body_label, curr_node_label, mass, cm, inertia_moment, 0);
     }
-
 }
 
 void
 Platform::set_deformablejoint() {
-    for(int i=0; i<num_deformable_joints; i++) {
+    //CMatrixの係数の計算に使用する変数
+
+    // TwrTpMass
+    double RotMass = inputdata ->get_value("HubMass");
+    double NacMass = inputdata ->get_value("NacMass");
+    double YawBrMass = inputdata ->get_value("YawBrMass");
+    double RFrlMass = inputdata ->get_value("RFrlMass");
+    double BoomMass = inputdata ->get_value("BoomMass");
+    double TFinMass = inputdata ->get_value("TFinMass");
+    double TwrTpMass = RotMass + NacMass + YawBrMass + RFrlMass + BoomMass + TFinMass;
+    
+    double TwrHt = inputdata ->get_value("TowerHt");
+    double TwrDft = inputdata ->get_value("TwrDraft");
+    double TwrRBHt = inputdata ->get_value("TwrRBHt");
+    double TwrFlexL = TwrHt + TwrDft - TwrRBHt;
+    double TwrNodes = inputdata ->get_value("TwrNodes");
+    double DHNodes = TwrFlexL/TwrNodes;
+    double num_reference_Tower = inputdata ->get_value("NTwInpSt");
+    double FAStTunr = inputdata ->get_value("FAStTunr1");
+    double SSStTunr = inputdata ->get_value("SSStTunr1");
+    int PolyOrd = 6;
+
+    // Interpolution TwFAStif & TwSSStif    KTFA KTSS
+    
+    double KTFA1 = 0.0;
+    double KTSS1 = 0.0;
+
+    for(int j=0; j<TwrNodes; j++) {
+
+      double TwrFASF1 = 0.0;
+      double TwrSSSF1 = 0.0;
+
+      for(int i=2; i<PolyOrd+1; i++) {
  
+        int Swtch0 = 0;
+        int Swtch1 = 0;
+        int Swtch2 = 1;
+        double Deriv = 2.0;
+        double CoefTmp = Swtch0 + Swtch1 * i + Swtch2 * i * (i-1);
+
+        if(i==2) {
+          TwrFASF1 = inputdata ->get_value("TwFAM1Sh",2) * CoefTmp/pow(TwrFlexL,Deriv);
+          TwrSSSF1 = inputdata ->get_value("TwSSM1Sh",2) * CoefTmp/pow(TwrFlexL,Deriv);
+        } else {
+          TwrFASF1 = TwrFASF1 + inputdata ->get_value("TwFAM1Sh",i) * CoefTmp * pow((0.5 * DHNodes * (2 * (j+1)-1))/TwrFlexL,i-Deriv)/pow(TwrFlexL,Deriv);
+          TwrSSSF1 = TwrSSSF1 + inputdata ->get_value("TwSSM1Sh",i) * CoefTmp * pow((0.5 * DHNodes * (2 * (j+1)-1))/TwrFlexL,i-Deriv)/pow(TwrFlexL,Deriv);
+        }
+      }
+
+      double XAray1;
+      double XAray2;
+      double YAray1;
+      double YAray2;
+      double ZAray1;
+      double ZAray2;
+      double XVal = 0.5 * DHNodes * (2 * (j+1)-1);
+      
+      if(j<2) {
+        XAray1 = inputdata ->get_value("HtFract", 1) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 2) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TwFAStif", 1);
+        YAray2 = inputdata ->get_value("TwFAStif", 2);
+        ZAray1 = inputdata ->get_value("TwSSStif", 1);
+        ZAray2 = inputdata ->get_value("TwSSStif", 2);
+      } else if(j>1 && j<4) {
+        XAray1 = inputdata ->get_value("HtFract", 2) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 3) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TwFAStif", 2);
+        YAray2 = inputdata ->get_value("TwFAStif", 3);
+        ZAray1 = inputdata ->get_value("TwSSStif", 2);
+        ZAray2 = inputdata ->get_value("TwSSStif", 3);
+      } else if(j>3 && j<6) {
+        XAray1 = inputdata ->get_value("HtFract", 3) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 4) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TwFAStif", 3);
+        YAray2 = inputdata ->get_value("TwFAStif", 4);
+        ZAray1 = inputdata ->get_value("TwSSStif", 3);
+        ZAray2 = inputdata ->get_value("TwSSStif", 4);
+      } else if(j>5 && j<8) {
+        XAray1 = inputdata ->get_value("HtFract", 4) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 5) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TwFAStif", 4);
+        YAray2 = inputdata ->get_value("TwFAStif", 5);
+        ZAray1 = inputdata ->get_value("TwSSStif", 4);
+        ZAray2 = inputdata ->get_value("TwSSStif", 5);
+      } else if(j>7 && j<10) {
+        XAray1 = inputdata ->get_value("HtFract", 5) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 6) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TwFAStif", 5);
+        YAray2 = inputdata ->get_value("TwFAStif", 6);
+        ZAray1 = inputdata ->get_value("TwSSStif", 5);
+        ZAray2 = inputdata ->get_value("TwSSStif", 6);
+      } else if(j>9 && j<12) {
+        XAray1 = inputdata ->get_value("HtFract", 6) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 7) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TwFAStif", 6);
+        YAray2 = inputdata ->get_value("TwFAStif",7);
+        ZAray1 = inputdata ->get_value("TwSSStif", 6);
+        ZAray2 = inputdata ->get_value("TwSSStif", 7);
+      } else if(j>11 && j<14) {
+        XAray1 = inputdata ->get_value("HtFract", 7) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 8) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TwFAStif", 7);
+        YAray2 = inputdata ->get_value("TwFAStif", 8);
+        ZAray1 = inputdata ->get_value("TwSSStif", 7);
+        ZAray2 = inputdata ->get_value("TwSSStif", 8);
+      } else if(j>13 && j<16) {
+        XAray1 = inputdata ->get_value("HtFract", 8) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 9) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TwFAStif", 8);
+        YAray2 = inputdata ->get_value("TwFAStif", 9);
+        ZAray1 = inputdata ->get_value("TwSSStif", 8);
+        ZAray2 = inputdata ->get_value("TwSSStif", 9);
+      } else if(j>15 && j<18) {
+        XAray1 = inputdata ->get_value("HtFract", 9) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 10) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TwFAStif", 9);
+        YAray2 = inputdata ->get_value("TwFAStif", 10);
+        ZAray1 = inputdata ->get_value("TwSSStif", 9);
+        ZAray2 = inputdata ->get_value("TwSSStif", 10);
+      } else {
+        XAray1 = inputdata ->get_value("HtFract", 10) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 11) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TwFAStif", 10);
+        YAray2 = inputdata ->get_value("TwFAStif", 11);
+        ZAray1 = inputdata ->get_value("TwSSStif", 10);
+        ZAray2 = inputdata ->get_value("TwSSStif", 11);
+      }
+  
+      double InterpTwFAStif = (YAray2-YAray1) * (XVal-XAray1)/(XAray2-XAray1) + YAray1;
+      double InterpTwSSStif = (ZAray2-ZAray1) * (XVal-XAray1)/(XAray2-XAray1) + ZAray1;
+      double ElstffFA = InterpTwFAStif * DHNodes;
+      double ElstffSS = InterpTwSSStif * DHNodes;
+      KTFA1 = KTFA1 + ElstffFA * TwrFASF1 * TwrFASF1;  
+      KTSS1 = KTSS1 + ElstffSS * TwrSSSF1 * TwrSSSF1;  
+    }
+
+    // Interpolution TMass & MTFA & MTSS
+
+    double MTFA = TwrTpMass;
+    double MTSS = TwrTpMass;
+
+    for(int j=0; j<TwrNodes; j++) {
+
+      double TwrFASF2 = 0.0;
+      double TwrSSSF2 = 0.0;
+      
+      for(int i=2; i<PolyOrd+1; i++) {
+
+        int Swtch0 = 1;
+        int Swtch1 = 0;
+        int Swtch2 = 0;
+        int Deriv = 0;
+
+        int CoefTmp = Swtch0 + Swtch1 * i + Swtch2 * i * (i-1);
+        TwrFASF2 = TwrFASF2 + inputdata ->get_value("TwFAM1Sh",i) * CoefTmp * pow((0.5 * DHNodes * (2* (j+1)-1))/TwrFlexL,i-Deriv)/pow(TwrFlexL,Deriv); 
+        TwrSSSF2 = TwrSSSF2 + inputdata ->get_value("TwSSM1Sh",i) * CoefTmp * pow((0.5 * DHNodes * (2* (j+1)-1))/TwrFlexL,i-Deriv)/pow(TwrFlexL,Deriv); 
+      }  
+      
+      double XAray1;
+      double XAray2;
+      double YAray1;
+      double YAray2;
+      double XVal = 0.5 * DHNodes * (2 * (j+1)-1);
+
+      if(j<2) {
+        XAray1 = inputdata ->get_value("HtFract", 1) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 2) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TMassDen", 1);
+        YAray2 = inputdata ->get_value("TMassDen", 2);
+        
+      } else if(j>1 && j<4) {
+        XAray1 = inputdata ->get_value("HtFract", 2) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 3) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TMassDen", 2);
+        YAray2 = inputdata ->get_value("TMassDen", 3);
+      } else if(j>3 && j<6) {
+        XAray1 = inputdata ->get_value("HtFract", 3) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 4) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TMassDen", 3);
+        YAray2 = inputdata ->get_value("TMassDen", 4);
+      } else if(j>5 && j<8) {
+        XAray1 = inputdata ->get_value("HtFract", 4) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 5) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TMassDen", 4);
+        YAray2 = inputdata ->get_value("TMassDen", 5);
+      } else if(j>7 && j<10) {
+        XAray1 = inputdata ->get_value("HtFract", 5) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 6) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TMassDen", 5);
+        YAray2 = inputdata ->get_value("TMassDen", 6);
+      } else if(j>9 && j<12) {
+        XAray1 = inputdata ->get_value("HtFract", 6) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 7) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TMassDen", 6);
+        YAray2 = inputdata ->get_value("TMassDen", 7);
+      } else if(j>11 && j<14) {
+        XAray1 = inputdata ->get_value("HtFract", 7) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 8) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TMassDen", 7);
+        YAray2 = inputdata ->get_value("TMassDen", 8);
+      } else if(j>13 && j<16) {
+        XAray1 = inputdata ->get_value("HtFract", 8) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 9) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TMassDen", 8);
+        YAray2 = inputdata ->get_value("TMassDen", 9);
+      } else if(j>15 && j<18) {
+        XAray1 = inputdata ->get_value("HtFract", 9) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 10) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TMassDen", 9);
+        YAray2 = inputdata ->get_value("TMassDen", 10);
+      } else {
+        XAray1 = inputdata ->get_value("HtFract", 10) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 11) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TMassDen", 10);
+        YAray2 = inputdata ->get_value("TMassDen", 11);
+      }
+
+      double InterpTMass = (YAray2-YAray1) * (XVal-XAray1)/(XAray2-XAray1) + YAray1;
+      double ElmntMass = InterpTMass * DHNodes;
+      MTFA = MTFA + ElmntMass * TwrFASF2 * TwrFASF2;
+      MTSS = MTSS + ElmntMass * TwrSSSF2 * TwrSSSF2;
+    }
+
+    
+
+    double KTFA = KTFA1 * sqrt(FAStTunr * FAStTunr);
+    double FreqTFA = 0.5/M_PI * sqrt(KTFA/(MTFA-TwrTpMass));
+
+    double KTSS = KTSS1 * sqrt(SSStTunr * SSStTunr);
+    double FreqTSS = 0.5/M_PI * sqrt(KTSS/(MTSS-TwrTpMass));
+    
+    for(int i=0; i<num_deformable_joints; i++) {
+
         int curr_node1 = nodes[i].get_label();
         int curr_node2 = nodes[i+1].get_label();
 
@@ -127,9 +361,9 @@ Platform::set_deformablejoint() {
 
         Mat6x6d kMatrix = zero6x6;
         Mat6x6d Cmatrix = zero6x6;
-        
+
         // Tower　node間距離
-        double TmpLength = 0.5*(inputdata ->get_value("ELENGTH", i+1)+inputdata->get_value("ELENGTH", (i+2)));
+        double TmpLength = 0.5*(inputdata ->get_value("ELENGTH", i+1) + inputdata->get_value("ELENGTH", (i+2)));
         double TmpLength2 = TmpLength*TmpLength;
         double TmpLength3 = TmpLength2*TmpLength;
         // 剛性
@@ -142,13 +376,11 @@ Platform::set_deformablejoint() {
         double StiffPGJ1 = inputdata ->get_value("GJStif", i+1);
         double StiffPGJ2 = inputdata ->get_value("GJStif", i+2);
 
-        //double CRationTSS = 0.01*(inputdata ->get_value("TwrSSDmp1"))/(M_PI*(inputdata ->get_value("CornerFreq")));
-        //double CRationTFA = 0.01*(inputdata ->get_value("TwrFADmp1"))/(M_PI*(inputdata ->get_value("CornerFreq")));
         //ベータ減衰　CRatio = 減衰係数/(π*固有周波数)
-        double CRatioTSS = 0.01*(inputdata ->get_value("TwrSSDmp1"))/(M_PI*1.337148664188484);
-        double CRatioTFA = 0.01*(inputdata ->get_value("TwrFADmp1"))/(M_PI*1.337148664188484);
-        double CRatioTEA = 1.0;
-        double CRatioTGJ = 1.0;
+        double CRatioTFA = 0.01*(inputdata ->get_value("TwrFADmp1"))/(M_PI * FreqTFA);
+        double CRatioTSS = 0.01*(inputdata ->get_value("TwrSSDmp1"))/(M_PI * FreqTSS);
+        double CRatioTEA = 0.01*1.0;
+        double CRatioTGJ = 0.01*1.0;
 
         // set Kmatrix and Cmatrix
         kMatrix.set(0,0) =  0.001*0.5*(StiffPEA1+StiffPEA2)/TmpLength;
@@ -245,13 +477,13 @@ Platform::write_elements_in(std::ofstream &output_file) const {
     }
 }
 
-int 
+int
 Platform::get_num_nodes() const {
     // platform nodes + ground
     return num_nodes + 1 ;
 }
 
-int 
+int
 Platform::get_num_rigid_bodies() const {
     return num_rigidbodies;
 }
