@@ -3,6 +3,7 @@
 
 #include "Vec3d.h"
 #include "Mat3x3d.h"
+#include "Mat2x2d.h"
 
 #include "InputData.h"
 #include "Node.h"
@@ -13,7 +14,7 @@
 class Platform {
     private:
     // platfrom全体のラベル、node 等にplatform_label + 1 .... でラベルを与える
-    const int platform_label; 
+    const int platform_label;
 
     //pointer of inputdata object
     InputData *inputdata;
@@ -24,6 +25,16 @@ class Platform {
     int num_deformable_joints;
     int num_total_joints;
     int num_joints;
+
+    //double TwrFlexL;
+    //double TwrHt;
+    //double TwrDft;
+    //double TwrRBHt;
+    //double TwrNodes;
+    //double DHNodes;
+    //double HtFract;
+    //double TwFAM1Sh;
+    //double Deriv;
 
     Vec3d init_displacement;
     Vec3d init_euler321;
@@ -53,6 +64,8 @@ class Platform {
     void write_reference_in(std::ofstream &output_file) const;
     void write_nodes_in(std::ofstream &ofs) const;
     void write_elements_in(std::ofstream &ofs) const;
+    //void SHP(double HtFract,double TwrFlexL,double TwFAM1Sh,double Deriv);
+    //void Interpolution();
 
     const ReferenceFrame get_top_reference() const {return ptfm_top_reference;};
     int get_num_nodes() const;
