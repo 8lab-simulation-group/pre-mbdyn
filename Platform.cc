@@ -383,14 +383,14 @@ Platform::set_deformablejoint() {
         double CRatioTGJ = 0.01*1.0;
 
         // set Kmatrix and Cmatrix
-        kMatrix.set(0,0) =  0.001*0.5*(StiffPEA1+StiffPEA2)/TmpLength;
-        kMatrix.set(1,1) =  0.001*6.0*(StiffPSS1+StiffPSS2)/TmpLength3;
-        kMatrix.set(2,2) =  0.001*6.0*(StiffPFA1+StiffPFA2)/TmpLength3;
-        kMatrix.set(3,3) =  0.001*0.5*(StiffPGJ1+StiffPGJ2)/TmpLength;
-        kMatrix.set(4,4) =  0.001*(3.0*StiffPFA1+StiffPFA2)/TmpLength;
-        kMatrix.set(5,5) =  0.001*(3.0*StiffPSS1+StiffPSS2)/TmpLength;
-        kMatrix.set(1,5) = -0.001*2.0*(2.0*StiffPSS1+StiffPSS2)/TmpLength2;
-        kMatrix.set(2,4) =  0.001*2.0*(2.0*StiffPFA1+StiffPFA2)/TmpLength2;
+        kMatrix.set(0,0) =  0.5*(StiffPEA1+StiffPEA2)/TmpLength;
+        kMatrix.set(1,1) =  6.0*(StiffPSS1+StiffPSS2)/TmpLength3;
+        kMatrix.set(2,2) =  6.0*(StiffPFA1+StiffPFA2)/TmpLength3;
+        kMatrix.set(3,3) =  0.5*(StiffPGJ1+StiffPGJ2)/TmpLength;
+        kMatrix.set(4,4) =  (3.0*StiffPFA1+StiffPFA2)/TmpLength;
+        kMatrix.set(5,5) =  (3.0*StiffPSS1+StiffPSS2)/TmpLength;
+        kMatrix.set(1,5) = -2.0*(2.0*StiffPSS1+StiffPSS2)/TmpLength2;
+        kMatrix.set(2,4) =  2.0*(2.0*StiffPFA1+StiffPFA2)/TmpLength2;
         kMatrix.set(5,1) = kMatrix.set(1,5);
         kMatrix.set(4,2) = kMatrix.set(2,4);
         Cmatrix.set(0,0) = kMatrix.set(0,0)*CRatioTEA;
