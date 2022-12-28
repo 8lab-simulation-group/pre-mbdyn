@@ -24,6 +24,13 @@ class Tower {
     int num_total_joints;
     int num_joints;
 
+    double TwrHt;
+    double TwrDft;
+    double TwrRBHt;
+    double TwrFlexL;
+    double DHNodes;
+
+    Frame Tower_reference;
     ReferenceFrame tower_top_reference;
 
     // Towerを構成するノードとエレメントの変数。vectorで宣言し、後ほど要素数に応じて容量を確保する。
@@ -36,7 +43,7 @@ class Tower {
 
     public:
     // コンストラクタ：初期化の時点で、ラベルとinputDataのポインタを要求する
-    Tower(int platform_label, const ReferenceFrame &towerbase, InputData *InputData);
+    Tower(int tower_label, const ReferenceFrame &towerbase, InputData *InputData);
     // デストラクタ：動的なメンバ変数を破棄するが、今回は何もしない。
     ~Tower(){};
 

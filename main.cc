@@ -1,7 +1,8 @@
 #include "InputData.h"
 #include "Platform.h"
+#include "Tower.h"
 
-void output(Platform &ptfm);
+void output(Platform &ptfm, Tower &Tower);
 
 int main(int argc, char *argv[]){
 
@@ -17,12 +18,13 @@ int main(int argc, char *argv[]){
 
     // コンストラクタ内でデータを加工し、mbdynのフォームに会わせてアウトプット可能な形式でデータを保管する
     Platform platform(platform_label, &inputdata);
-    output(platform);
+    Tower Tower(tower_label, tower_base_reference, &inputdata);
+    output(platform ,Tower);
 
     return 0;
 }
 
-void output(Platform &platform) {
+void output(Platform &platform, Tower &Tower) {
     const std::string out_file_name_base = "NREL5MW_OC3Hywind_MBDyn";
 
     //--------------output Reference----------------------------
@@ -34,6 +36,7 @@ void output(Platform &platform) {
 
     // writing reference in the file
     platform.write_reference_in(writing_file_reference);
+    Tower.write_reference_in(writing_file_reference);
 
     //------------output nodes -----------------------------------
     const std::string out_file_name_node = out_file_name_base + std::string(".nod");
@@ -42,6 +45,7 @@ void output(Platform &platform) {
     writing_file_node.open(out_file_name_node, std::ios::out);
 
     platform.write_nodes_in(writing_file_node);
+    Tower.write_nodes_in(writing_file_node);
 
     //-----------output element -------------------------------------
     const std::string out_file_name_elem = out_file_name_base + std::string(".elm");
@@ -50,6 +54,6 @@ void output(Platform &platform) {
     writing_file_elem.open(out_file_name_elem, std::ios::out);
 
     platform.write_elements_in(writing_file_elem);
-
+    Tower.write_elements_in(writing_file_elem);
 
 }
