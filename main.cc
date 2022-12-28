@@ -18,7 +18,7 @@ int main(int argc, char *argv[]){
 
     // コンストラクタ内でデータを加工し、mbdynのフォームに会わせてアウトプット可能な形式でデータを保管する
     Platform platform(platform_label, &inputdata);
-    Tower Tower(tower_label, tower_base_reference, &inputdata);
+    Tower Tower(tower_label, platform.get_top_reference(), &inputdata);
     output(platform ,Tower);
 
     return 0;

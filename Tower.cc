@@ -24,8 +24,6 @@ Tower::Tower(int label, const ReferenceFrame &towerbase, InputData *ID)
     deformable_joints.resize(num_deformable_joints);
     total_joints.resize(num_total_joints);
 
-    tower_base_reference = Frame(get_top_reference);
-
     // tower top　のReferanceFrameを作る、この座標系はClass RNAに渡す
     double tower_top_height = inputdata ->get_value("TowerHt"); 
     Vec3d tower_top(0.,0.,tower_top_height);
@@ -710,8 +708,6 @@ Tower::write_nodes_in(std::ofstream &output_file) const {
 
 void
 Tower::write_elements_in(std::ofstream &output_file) const {
-    output_file << "#----Platform to Tower joint -------" <<std::endl;
-    ground_joint.write_in_file(output_file);
 
     output_file << "#----Tower Rigid Bodies-----" <<std::endl;
     for(const RigidBody &rbd : rigidbodies){
