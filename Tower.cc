@@ -24,13 +24,13 @@ Tower::Tower(int label, const ReferenceFrame &towerbase, InputData *ID)
     deformable_joints.resize(num_deformable_joints);
     total_joints.resize(num_total_joints);
 
-    tower_base_reference = ReferenceFrame get_top_reference(ptfm_top_reference);
+    tower_base_reference = Frame(get_top_reference);
 
     // tower top　のReferanceFrameを作る、この座標系はClass RNAに渡す
     double tower_top_height = inputdata ->get_value("TowerHt"); 
     Vec3d tower_top(0.,0.,tower_top_height);
     Frame offset(tower_label + 500, tower_top, eye3x3, zero3, zero3);
-    towr_top_reference = ReferenceFrame(tower_label + 500, tower_base_reference, offset);
+    tower_top_reference = ReferenceFrame(tower_label + 500, tower_base_reference, offset);
 
     set_reference();
     set_nodes();
@@ -437,12 +437,12 @@ Tower::set_deformablejoint() {
     double FreqTSS = 0.5/M_PI * sqrt(KTSS/(MTSS-TwrTpMass));
 
     // Interpolution TwFAStif & TwSSStif & TwGJStif & TwEAStif
-    vector<double> InterpTwFAStif(num_reference);
-    vector<double> InterpTwSSStif(num_reference);
-    vector<double> InterpTwGJStif(num_reference);
-    vector<double> InterpTwEAStif(num_reference);
+    std::vector<double> InterpTwFAStif(num_reference);
+    std::vector<double> InterpTwSSStif(num_reference);
+    std::vector<double> InterpTwGJStif(num_reference);
+    std::vector<double> InterpTwEAStif(num_reference);
 
-    for (int i=0; i<deformable_joints i++) {
+    for (int i=0; i<num_deformable_joints; i++) {
     
         double XAray1;
         double XAray2;
@@ -610,16 +610,16 @@ Tower::set_deformablejoint() {
             kMatrix.set(2,4) = 6.0*InterpTwFAStif[i]/TmpLength2;
             kMatrix.set(5,1) = kMatrix.set(1,5);
             kMatrix.set(4,2) = kMatrix.set(2,4);
-            CMatrix.set(0,0) = kMatrix.set(0,0) * CRatioTEA;
-            CMatrix.set(1,1) = kMatrix.set(1,1) * CRatioTSS;
-            CMatrix.set(2,2) = kMatrix.set(2,2) * CRatioTFA;
-            CMatrix.set(3,3) = kMatrix.set(3,3) * CRatioTGJ;
-            CMatrix.set(4,4) = kMatrix.set(4,4) * CRatioTFA;
-            CMatrix.set(5,5) = kMatrix.set(5,5) * CRatioTSS;
-            CMatrix.set(1,5) = kMatrix.set(1,5) * CRatioTSS;
-            CMatrix.set(2,4) = kMatrix.set(2,4) * CRatioTFA;
-            CMatrix.set(5,1) = CMatrix.set(1,5);
-            CMatrix.set(4,2) = CMatrix.set(2,4);
+            Cmatrix.set(0,0) = kMatrix.set(0,0) * CRatioTEA;
+            Cmatrix.set(1,1) = kMatrix.set(1,1) * CRatioTSS;
+            Cmatrix.set(2,2) = kMatrix.set(2,2) * CRatioTFA;
+            Cmatrix.set(3,3) = kMatrix.set(3,3) * CRatioTGJ;
+            Cmatrix.set(4,4) = kMatrix.set(4,4) * CRatioTFA;
+            Cmatrix.set(5,5) = kMatrix.set(5,5) * CRatioTSS;
+            Cmatrix.set(1,5) = kMatrix.set(1,5) * CRatioTSS;
+            Cmatrix.set(2,4) = kMatrix.set(2,4) * CRatioTFA;
+            Cmatrix.set(5,1) = Cmatrix.set(1,5);
+            Cmatrix.set(4,2) = Cmatrix.set(2,4);
         } else if(i>0 && i<num_deformable_joints-1) {
             kMatrix.set(0,0) = 0.5*(InterpTwEAStif[i] + InterpTwEAStif[i-1])/TmpLength;
             kMatrix.set(1,1) = 6.0*(InterpTwSSStif[i] + InterpTwSSStif[i-1])/TmpLength3;
@@ -631,16 +631,16 @@ Tower::set_deformablejoint() {
             kMatrix.set(2,4) = 2.0*(2.0*InterpTwFAStif[i] + InterpTwFAStif[i-1])/TmpLength2;
             kMatrix.set(5,1) = kMatrix.set(1,5);
             kMatrix.set(4,2) = kMatrix.set(2,4);
-            CMatrix.set(0,0) = kMatrix.set(0,0) * CRatioTEA;
-            CMatrix.set(1,1) = kMatrix.set(1,1) * CRatioTSS;
-            CMatrix.set(2,2) = kMatrix.set(2,2) * CRatioTFA;
-            CMatrix.set(3,3) = kMatrix.set(3,3) * CRatioTGJ;
-            CMatrix.set(4,4) = kMatrix.set(4,4) * CRatioTFA;
-            CMatrix.set(5,5) = kMatrix.set(5,5) * CRatioTSS;
-            CMatrix.set(1,5) = kMatrix.set(1,5) * CRatioTSS;
-            CMatrix.set(2,4) = kMatrix.set(2,4) * CRatioTFA;
-            CMatrix.set(5,1) = CMatrix.set(1,5);
-            CMatrix.set(4,2) = CMatrix.set(2,4);
+            Cmatrix.set(0,0) = kMatrix.set(0,0) * CRatioTEA;
+            Cmatrix.set(1,1) = kMatrix.set(1,1) * CRatioTSS;
+            Cmatrix.set(2,2) = kMatrix.set(2,2) * CRatioTFA;
+            Cmatrix.set(3,3) = kMatrix.set(3,3) * CRatioTGJ;
+            Cmatrix.set(4,4) = kMatrix.set(4,4) * CRatioTFA;
+            Cmatrix.set(5,5) = kMatrix.set(5,5) * CRatioTSS;
+            Cmatrix.set(1,5) = kMatrix.set(1,5) * CRatioTSS;
+            Cmatrix.set(2,4) = kMatrix.set(2,4) * CRatioTFA;
+            Cmatrix.set(5,1) = Cmatrix.set(1,5);
+            Cmatrix.set(4,2) = Cmatrix.set(2,4);
         } else {
             kMatrix.set(0,0) = InterpTwEAStif[i]/TmpLength;
             kMatrix.set(1,1) = 12.0*InterpTwSSStif[i]/TmpLength3;
@@ -652,16 +652,16 @@ Tower::set_deformablejoint() {
             kMatrix.set(2,4) = 6.0*InterpTwFAStif[i]/TmpLength2;
             kMatrix.set(5,1) = kMatrix.set(1,5);
             kMatrix.set(4,2) = kMatrix.set(2,4);
-            CMatrix.set(0,0) = kMatrix.set(0,0) * CRatioTEA;
-            CMatrix.set(1,1) = kMatrix.set(1,1) * CRatioTSS;
-            CMatrix.set(2,2) = kMatrix.set(2,2) * CRatioTFA;
-            CMatrix.set(3,3) = kMatrix.set(3,3) * CRatioTGJ;
-            CMatrix.set(4,4) = kMatrix.set(4,4) * CRatioTFA;
-            CMatrix.set(5,5) = kMatrix.set(5,5) * CRatioTSS;
-            CMatrix.set(1,5) = kMatrix.set(1,5) * CRatioTSS;
-            CMatrix.set(2,4) = kMatrix.set(2,4) * CRatioTFA;
-            CMatrix.set(5,1) = CMatrix.set(1,5);
-            CMatrix.set(4,2) = CMatrix.set(2,4);
+            Cmatrix.set(0,0) = kMatrix.set(0,0) * CRatioTEA;
+            Cmatrix.set(1,1) = kMatrix.set(1,1) * CRatioTSS;
+            Cmatrix.set(2,2) = kMatrix.set(2,2) * CRatioTFA;
+            Cmatrix.set(3,3) = kMatrix.set(3,3) * CRatioTGJ;
+            Cmatrix.set(4,4) = kMatrix.set(4,4) * CRatioTFA;
+            Cmatrix.set(5,5) = kMatrix.set(5,5) * CRatioTSS;
+            Cmatrix.set(1,5) = kMatrix.set(1,5) * CRatioTSS;
+            Cmatrix.set(2,4) = kMatrix.set(2,4) * CRatioTFA;
+            Cmatrix.set(5,1) = Cmatrix.set(1,5);
+            Cmatrix.set(4,2) = Cmatrix.set(2,4);
         }
 
         deformable_joints[i] = DeformableJoint(joint_label, curr_node1, curr_node2, joint_position, kMatrix,Cmatrix, 0);
