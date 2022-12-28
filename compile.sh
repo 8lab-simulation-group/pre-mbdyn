@@ -10,6 +10,7 @@ g++ -c Element.cc
 g++ -c RigidBody.cc
 g++ -c Joint.cc
 g++ -c Platform.cc
+g++ -c Tower.cc
 g++ -c main.cc
 g++ -c InputData.cc
 

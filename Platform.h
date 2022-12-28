@@ -3,7 +3,6 @@
 
 #include "Vec3d.h"
 #include "Mat3x3d.h"
-#include "Mat2x2d.h"
 
 #include "InputData.h"
 #include "Node.h"
