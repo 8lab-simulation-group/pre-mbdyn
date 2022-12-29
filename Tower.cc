@@ -440,7 +440,7 @@ Tower::set_deformablejoint() {
     std::vector<double> InterpTwGJStif(num_reference);
     std::vector<double> InterpTwEAStif(num_reference);
 
-    for (int i=0; i<num_deformable_joints; i++) {
+    for (int i=0; i<num_reference; i++) {
     
         double XAray1;
         double XAray2;
@@ -587,10 +587,6 @@ Tower::set_deformablejoint() {
         Mat6x6d kMatrix = zero6x6;
         Mat6x6d Cmatrix = zero6x6;
 
-        double TmpLength = DHNodes;
-        double TmpLength2 = TmpLength * TmpLength;
-        double TmpLength3 = TmpLength2 * TmpLength;
-
         double CRatioTFA = 0.01*(inputdata ->get_value("TwrFADmp1"))/(M_PI * FreqTFA);
         double CRatioTSS = 0.01*(inputdata ->get_value("TwrSSDmp1"))/(M_PI * FreqTSS);
         double CRatioTEA = 0.01*1.0;
@@ -598,6 +594,9 @@ Tower::set_deformablejoint() {
 
         // set Kmatrix and Cmatrix
         if(i==0) {
+            double TmpLength = 0.5*DHNodes;
+            double TmpLength2 = TmpLength * TmpLength;
+            double TmpLength3 = TmpLength2 * TmpLength;
             kMatrix.set(0,0) = InterpTwEAStif[i]/TmpLength;
             kMatrix.set(1,1) = 12.0*InterpTwSSStif[i]/TmpLength3;
             kMatrix.set(2,2) = 12.0*InterpTwFAStif[i]/TmpLength3;
@@ -619,6 +618,9 @@ Tower::set_deformablejoint() {
             Cmatrix.set(5,1) = Cmatrix.set(1,5);
             Cmatrix.set(4,2) = Cmatrix.set(2,4);
         } else if(i>0 && i<num_deformable_joints-1) {
+            double TmpLength = DHNodes;
+            double TmpLength2 = TmpLength * TmpLength;
+            double TmpLength3 = TmpLength2 * TmpLength;
             kMatrix.set(0,0) = 0.5*(InterpTwEAStif[i] + InterpTwEAStif[i-1])/TmpLength;
             kMatrix.set(1,1) = 6.0*(InterpTwSSStif[i] + InterpTwSSStif[i-1])/TmpLength3;
             kMatrix.set(2,2) = 6.0*(InterpTwFAStif[i] + InterpTwFAStif[i-1])/TmpLength3;
@@ -640,6 +642,9 @@ Tower::set_deformablejoint() {
             Cmatrix.set(5,1) = Cmatrix.set(1,5);
             Cmatrix.set(4,2) = Cmatrix.set(2,4);
         } else {
+            double TmpLength = 0.5*DHNodes;
+            double TmpLength2 = TmpLength * TmpLength;
+            double TmpLength3 = TmpLength2 * TmpLength;
             kMatrix.set(0,0) = InterpTwEAStif[i]/TmpLength;
             kMatrix.set(1,1) = 12.0*InterpTwSSStif[i]/TmpLength3;
             kMatrix.set(2,2) = 12.0*InterpTwFAStif[i]/TmpLength3;
