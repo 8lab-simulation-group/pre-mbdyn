@@ -577,18 +577,17 @@ Tower::set_deformablejoint() {
     double CRatioTGJ;
 
 
-    for(int i=0; i<num_deformable_joints; i++) {
+    for(int i=0; i<num_reference+1; i++) {
  
-        int curr_node1 = nodes[i].get_label();
-        int curr_node2 = nodes[i+1].get_label();
+        int curr_node1;
+        int curr_node2;
 
         int joint_label = tower_label + i + 1;
         // jointの位置を指定する際の座標系、node1の座標系を使用
-        Frame base_Frame = nodes[i].get_frame();
+        Frame base_Frame;
         // その座標系からのoffset拘束点はnode1の場所とするので、offsetはなし
         Frame offset = offset_null;
-        // jointの位置を指定する座標系
-        ReferenceFrame joint_position(joint_label, base_Frame, offset);
+       
 
         Mat6x6d kMatrix = zero6x6;
         Mat6x6d Cmatrix = zero6x6;
@@ -599,17 +598,21 @@ Tower::set_deformablejoint() {
         CRatioTGJ = 0.01*1.0;
 
         // set Kmatrix and Cmatrix
-          double TmpLength = DHNodes;
+        if(i==0) {
+          curr_node1 = 1500;
+          curr_node2 = nodes[i].get_label();
+          Frame base_Frame = nodes[i].get_frame();
+          double TmpLength = 0.5 * DHNodes;
           double TmpLength2 = TmpLength * TmpLength;
           double TmpLength3 = TmpLength2 * TmpLength;
-          kMatrix.set(0,0) = 0.5*(InterpTwEAStif[i+1] + InterpTwEAStif[i])/TmpLength;
-          kMatrix.set(1,1) = 6.0*(InterpTwSSStif[i+1] + InterpTwSSStif[i])/TmpLength3;
-          kMatrix.set(2,2) = 6.0*(InterpTwFAStif[i+1] + InterpTwFAStif[i])/TmpLength3;
-          kMatrix.set(3,3) = 0.5*(InterpTwGJStif[i+1] + InterpTwGJStif[i])/TmpLength;
-          kMatrix.set(4,4) = (3.0*InterpTwFAStif[i+1] + InterpTwFAStif[i])/TmpLength;
-          kMatrix.set(5,5) = (3.0*InterpTwSSStif[i+1] + InterpTwSSStif[i])/TmpLength;
-          kMatrix.set(1,5) = -2.0*(2.0*InterpTwSSStif[i+1] + InterpTwSSStif[i])/TmpLength2;
-          kMatrix.set(2,4) = 2.0*(2.0*InterpTwFAStif[i+1] + InterpTwFAStif[i])/TmpLength2;
+          kMatrix.set(0,0) = InterpTwEAStif[i]/TmpLength;
+          kMatrix.set(1,1) = 12.0*InterpTwSSStif[i] /TmpLength3;
+          kMatrix.set(2,2) = 12.0*InterpTwFAStif[i]/TmpLength3;
+          kMatrix.set(3,3) = InterpTwGJStif[i]/TmpLength;
+          kMatrix.set(4,4) = 4.0*InterpTwFAStif[i]/TmpLength;
+          kMatrix.set(5,5) = 4.0*InterpTwSSStif[i]/TmpLength;
+          kMatrix.set(1,5) = -6.0*InterpTwSSStif[i]/TmpLength2;
+          kMatrix.set(2,4) = 6.0*InterpTwFAStif[i]/TmpLength2;
           kMatrix.set(5,1) = kMatrix.set(1,5);
           kMatrix.set(4,2) = kMatrix.set(2,4);
           Cmatrix.set(0,0) = kMatrix.set(0,0) * CRatioTEA;
@@ -622,7 +625,65 @@ Tower::set_deformablejoint() {
           Cmatrix.set(2,4) = kMatrix.set(2,4) * CRatioTFA;
           Cmatrix.set(5,1) = Cmatrix.set(1,5);
           Cmatrix.set(4,2) = Cmatrix.set(2,4);
-        
+        }else if(i>0 && i<num_reference) {
+          curr_node1 = nodes[i-1].get_label();
+          curr_node2 = nodes[i].get_label();
+          Frame base_Frame = nodes[i-1].get_frame();
+          double TmpLength = DHNodes;
+          double TmpLength2 = TmpLength * TmpLength;
+          double TmpLength3 = TmpLength2 * TmpLength;
+          kMatrix.set(0,0) = 0.5*(InterpTwEAStif[i] + InterpTwEAStif[i-1])/TmpLength;
+          kMatrix.set(1,1) = 6.0*(InterpTwSSStif[i] + InterpTwSSStif[i-1])/TmpLength3;
+          kMatrix.set(2,2) = 6.0*(InterpTwFAStif[i] + InterpTwFAStif[i-1])/TmpLength3;
+          kMatrix.set(3,3) = 0.5*(InterpTwGJStif[i] + InterpTwGJStif[i-1])/TmpLength;
+          kMatrix.set(4,4) = (3.0*InterpTwFAStif[i] + InterpTwFAStif[i-1])/TmpLength;
+          kMatrix.set(5,5) = (3.0*InterpTwSSStif[i] + InterpTwSSStif[i-1])/TmpLength;
+          kMatrix.set(1,5) = -2.0*(2.0*InterpTwSSStif[i] + InterpTwSSStif[i-1])/TmpLength2;
+          kMatrix.set(2,4) = 2.0*(2.0*InterpTwFAStif[i] + InterpTwFAStif[i-1])/TmpLength2;
+          kMatrix.set(5,1) = kMatrix.set(1,5);
+          kMatrix.set(4,2) = kMatrix.set(2,4);
+          Cmatrix.set(0,0) = kMatrix.set(0,0) * CRatioTEA;
+          Cmatrix.set(1,1) = kMatrix.set(1,1) * CRatioTSS;
+          Cmatrix.set(2,2) = kMatrix.set(2,2) * CRatioTFA;
+          Cmatrix.set(3,3) = kMatrix.set(3,3) * CRatioTGJ;
+          Cmatrix.set(4,4) = kMatrix.set(4,4) * CRatioTFA;
+          Cmatrix.set(5,5) = kMatrix.set(5,5) * CRatioTSS;
+          Cmatrix.set(1,5) = kMatrix.set(1,5) * CRatioTSS;
+          Cmatrix.set(2,4) = kMatrix.set(2,4) * CRatioTFA;
+          Cmatrix.set(5,1) = Cmatrix.set(1,5);
+          Cmatrix.set(4,2) = Cmatrix.set(2,4);
+        }else{
+          curr_node1 = nodes[i-1].get_label();
+          curr_node2 = 2500;
+          Frame base_Frame = nodes[i-1].get_frame();
+          double TmpLength = 0.5 * DHNodes;
+          double TmpLength2 = TmpLength * TmpLength;
+          double TmpLength3 = TmpLength2 * TmpLength;
+          kMatrix.set(0,0) = InterpTwEAStif[i-1]/TmpLength;
+          kMatrix.set(1,1) = 12.0*InterpTwSSStif[i-1] /TmpLength3;
+          kMatrix.set(2,2) = 12.0*InterpTwFAStif[i-1]/TmpLength3;
+          kMatrix.set(3,3) = InterpTwGJStif[i-1]/TmpLength;
+          kMatrix.set(4,4) = 4.0*InterpTwFAStif[i-1]/TmpLength;
+          kMatrix.set(5,5) = 4.0*InterpTwSSStif[i-1]/TmpLength;
+          kMatrix.set(1,5) = -6.0*InterpTwSSStif[i-1]/TmpLength2;
+          kMatrix.set(2,4) = 6.0*InterpTwFAStif[i-1]/TmpLength2;
+          kMatrix.set(5,1) = kMatrix.set(1,5);
+          kMatrix.set(4,2) = kMatrix.set(2,4);
+          Cmatrix.set(0,0) = kMatrix.set(0,0) * CRatioTEA;
+          Cmatrix.set(1,1) = kMatrix.set(1,1) * CRatioTSS;
+          Cmatrix.set(2,2) = kMatrix.set(2,2) * CRatioTFA;
+          Cmatrix.set(3,3) = kMatrix.set(3,3) * CRatioTGJ;
+          Cmatrix.set(4,4) = kMatrix.set(4,4) * CRatioTFA;
+          Cmatrix.set(5,5) = kMatrix.set(5,5) * CRatioTSS;
+          Cmatrix.set(1,5) = kMatrix.set(1,5) * CRatioTSS;
+          Cmatrix.set(2,4) = kMatrix.set(2,4) * CRatioTFA;
+          Cmatrix.set(5,1) = Cmatrix.set(1,5);
+          Cmatrix.set(4,2) = Cmatrix.set(2,4);
+        }
+
+         // jointの位置を指定する座標系
+        ReferenceFrame joint_position(joint_label, base_Frame, offset);
+
         deformable_joints[i] = DeformableJoint(joint_label, curr_node1, curr_node2, joint_position, kMatrix,Cmatrix, 0);
     }
 }
