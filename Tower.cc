@@ -585,10 +585,12 @@ Tower::set_deformablejoint() {
 
         int joint_label = tower_label + i + 1;
         // jointの位置を指定する際の座標系、node1の座標系を使用
-        Frame base_Frame;
+        //Frame base_frame = nodes[i].get_frame();
+        Frame base_frame;
         // その座標系からのoffset拘束点はnode1の場所とするので、offsetはなし
         Frame offset = offset_null;
-       
+        // jointの位置を指定する座標系
+        ReferenceFrame joint_position(joint_label, base_frame, offset);
 
         Mat6x6d kMatrix = zero6x6;
         Mat6x6d Cmatrix = zero6x6;
@@ -602,7 +604,7 @@ Tower::set_deformablejoint() {
         if(i==0) {
           curr_node1 = 1500;
           curr_node2 = nodes[i].get_label();
-          Frame base_Frame = nodes[i].get_frame();
+          base_frame = nodes[i].get_frame();
           double TmpLength = 0.5 * DHNodes;
           double TmpLength2 = TmpLength * TmpLength;
           double TmpLength3 = TmpLength2 * TmpLength;
@@ -629,7 +631,7 @@ Tower::set_deformablejoint() {
         }else if(i>0 && i<num_deformable_joints-1) {
           curr_node1 = nodes[i-1].get_label();
           curr_node2 = nodes[i].get_label();
-          Frame base_Frame = nodes[i-1].get_frame();
+          base_frame = nodes[i].get_frame();
           double TmpLength = DHNodes;
           double TmpLength2 = TmpLength * TmpLength;
           double TmpLength3 = TmpLength2 * TmpLength;
@@ -656,7 +658,7 @@ Tower::set_deformablejoint() {
         }else{
           curr_node1 = nodes[i-1].get_label();
           curr_node2 = 2500;
-          Frame base_Frame = nodes[i-1].get_frame();
+          base_frame = nodes[i-1].get_frame();
           double TmpLength = 0.5 * DHNodes;
           double TmpLength2 = TmpLength * TmpLength;
           double TmpLength3 = TmpLength2 * TmpLength;
@@ -682,8 +684,6 @@ Tower::set_deformablejoint() {
           Cmatrix.set(4,2) = Cmatrix.set(2,4);
         }
 
-         // jointの位置を指定する座標系
-        ReferenceFrame joint_position(joint_label, base_Frame, offset);
 
         deformable_joints[i] = DeformableJoint(joint_label, curr_node1, curr_node2, joint_position, kMatrix,Cmatrix, 0);
     }
