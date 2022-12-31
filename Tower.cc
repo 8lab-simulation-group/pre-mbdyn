@@ -9,7 +9,8 @@ Tower::Tower(int label, const ReferenceFrame &towerbase, InputData *ID)
     num_reference = inputdata ->get_value("TwrNodes");
     num_nodes = num_reference;
     num_rigidbodies = num_reference;
-    num_deformable_joints = num_reference - 1;
+    //platform_top_referenceと接続のため
+    num_deformable_joints = num_reference + 1;
     num_total_joints = num_reference -1 ;
     TwrHt = inputdata ->get_value("TowerHt");
     TwrDft = inputdata ->get_value("TwrDraft");
@@ -577,7 +578,7 @@ Tower::set_deformablejoint() {
     double CRatioTGJ;
 
 
-    for(int i=0; i<num_reference+1; i++) {
+    for(int i=0; i<num_deformable_joints; i++) {
  
         int curr_node1;
         int curr_node2;
@@ -625,7 +626,7 @@ Tower::set_deformablejoint() {
           Cmatrix.set(2,4) = kMatrix.set(2,4) * CRatioTFA;
           Cmatrix.set(5,1) = Cmatrix.set(1,5);
           Cmatrix.set(4,2) = Cmatrix.set(2,4);
-        }else if(i>0 && i<num_reference) {
+        }else if(i>0 && i<num_deformable_joints-1) {
           curr_node1 = nodes[i-1].get_label();
           curr_node2 = nodes[i].get_label();
           Frame base_Frame = nodes[i-1].get_frame();
