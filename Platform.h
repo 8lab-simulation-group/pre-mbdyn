@@ -25,6 +25,8 @@ class Platform {
     int num_total_joints;
     int num_joints;
 
+    double InitConstraint = 0.0125;
+
     //double TwrFlexL;
     //double TwrHt;
     //double TwrDft;
@@ -39,11 +41,14 @@ class Platform {
     Vec3d init_euler321;
     Frame ptfm_reference;
     ReferenceFrame ptfm_top_reference;
+    ReferenceFrame ptfm_top_ref;
 
     // ground node と clamp joint
     Frame ground_reference;
     StaticNode ground_node;
+    Node ptfm_top_node;
     ClampJoint ground_joint;
+    TotalJoint ptfm_top_joint;
 
     // プラットフォームを構成するノードとエレメントの変数。vectorで宣言し、後ほど要素数に応じて容量を確保する。
     std::vector<ReferenceFrame> references;

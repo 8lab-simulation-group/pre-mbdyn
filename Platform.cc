@@ -37,7 +37,10 @@ Platform::Platform(int label, InputData *ID)
     double ptfm_top_height = -1*inputdata->get_value("TwrDraft"); //mslからのdraftで入力しているので、座標系を換算しておく
     Vec3d ptfm_top(0.,0.,ptfm_top_height);
     Frame offset(platform_label + 500, ptfm_top, eye3x3, zero3, zero3);
+    ptfm_top_node = Node(platform_label + 500, ptfm_reference, offset_null,1);
     ptfm_top_reference = ReferenceFrame(platform_label + 500, ptfm_reference, offset);
+    ptfm_top_ref = ReferenceFrame(platform_label + 500, ptfm_reference, offset_null);
+    ptfm_top_joint = TotalJoint(platform_label + 500 +1 , platform_label + 500 , 2001, ptfm_top_ref, "Total", 0);
 
     set_reference();
     set_nodes();
@@ -436,14 +439,14 @@ Platform::write_reference_in(std::ofstream &output_file) const {
     output_file<<"#-----Platform Reference------"<<std::endl;
     ptfm_reference.write_reference(output_file);
 
-    output_file<<"#-----Platform Top Reference------"<<std::endl;
-    ptfm_top_reference.write_reference(output_file);
-
     output_file<<"#----Platform node reference----"<<std::endl;
 
     for(const ReferenceFrame &flm : references) {
         flm.write_reference(output_file);
     }
+
+    output_file<<"#-----Platform Top Reference------"<<std::endl;
+    ptfm_top_reference.write_reference(output_file);
 }
 
 void
@@ -455,6 +458,9 @@ Platform::write_nodes_in(std::ofstream &output_file) const {
     for(const Node &nod : nodes) {
         nod.write_node(output_file);
     }
+
+    output_file << "#----Platform top node----" << std::endl;
+    ptfm_top_node.write_node(output_file);
 }
 
 void
@@ -472,9 +478,13 @@ Platform::write_elements_in(std::ofstream &output_file) const {
     }
     output_file << "#----Platfrom initial total joint-----" <<std::endl;
     for(const TotalJoint &ttj : total_joints ) {
-        output_file << "driven :"<<ttj.get_label()<<", " <<"string, \"Time <= InitConstraint\""<<std::endl;
+        output_file << "driven :"<<ttj.get_label()<<", " <<"string, \"Time <="" 0.0125\""<< ", " << std::endl;
         ttj.write_in_file(output_file);
     }
+
+    output_file << "#----Platform top initial total joint----" <<std::endl;
+    output_file << "driven :"<<platform_label + 500 + 1<<", "<<"string, \"Time<=""0.0125\""<< ", " << std::endl;
+    ptfm_top_joint.write_in_file(output_file);
 }
 
 int

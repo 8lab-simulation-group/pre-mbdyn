@@ -56,7 +56,7 @@ TotalJoint::write_in_file(std::ofstream &ofs) const {
     Vec3d offset_e3 = relative_frame.get_vector_e3();
 
     if(constraint_condition == "Total") {
-        ofs << std::scientific<<std::setprecision(5)
+        ofs << std::scientific<<std::setprecision(5) << std::endl
             << "joint :" << elem_label << "," <<std::endl
             << "    total joint," << std::endl
             << "    " << node_label[0] << "," <<std::endl
@@ -80,7 +80,7 @@ TotalJoint::write_in_file(std::ofstream &ofs) const {
             << "    output, " << out_flg << ";"<<std::endl<<std::endl;
 
     } else if (constraint_condition == "Angular Velocity") {
-        ofs << std::scientific<<std::setprecision(5)
+        ofs << std::scientific<<std::setprecision(5) << std::endl
             << "joint :" << elem_label << "," <<std::endl
             << "    total joint," << std::endl
             << "    " << node_label[0] << "," <<std::endl

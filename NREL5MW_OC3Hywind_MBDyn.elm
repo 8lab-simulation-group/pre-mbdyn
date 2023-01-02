@@ -1134,7 +1134,8 @@ joint :1032,
     output, 0;
 
 #----Platfrom initial total joint-----
-driven :1101, string, "Time <= InitConstraint"
+driven :1101, string, "Time <= 0.0125", 
+
 joint :1101,
     total joint,
     1001,
@@ -1157,7 +1158,8 @@ joint :1101,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1102, string, "Time <= InitConstraint"
+driven :1102, string, "Time <= 0.0125", 
+
 joint :1102,
     total joint,
     1002,
@@ -1180,7 +1182,8 @@ joint :1102,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1103, string, "Time <= InitConstraint"
+driven :1103, string, "Time <= 0.0125", 
+
 joint :1103,
     total joint,
     1003,
@@ -1203,7 +1206,8 @@ joint :1103,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1104, string, "Time <= InitConstraint"
+driven :1104, string, "Time <= 0.0125", 
+
 joint :1104,
     total joint,
     1004,
@@ -1226,7 +1230,8 @@ joint :1104,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1105, string, "Time <= InitConstraint"
+driven :1105, string, "Time <= 0.0125", 
+
 joint :1105,
     total joint,
     1005,
@@ -1249,7 +1254,8 @@ joint :1105,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1106, string, "Time <= InitConstraint"
+driven :1106, string, "Time <= 0.0125", 
+
 joint :1106,
     total joint,
     1006,
@@ -1272,7 +1278,8 @@ joint :1106,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1107, string, "Time <= InitConstraint"
+driven :1107, string, "Time <= 0.0125", 
+
 joint :1107,
     total joint,
     1007,
@@ -1295,7 +1302,8 @@ joint :1107,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1108, string, "Time <= InitConstraint"
+driven :1108, string, "Time <= 0.0125", 
+
 joint :1108,
     total joint,
     1008,
@@ -1318,7 +1326,8 @@ joint :1108,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1109, string, "Time <= InitConstraint"
+driven :1109, string, "Time <= 0.0125", 
+
 joint :1109,
     total joint,
     1009,
@@ -1341,7 +1350,8 @@ joint :1109,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1110, string, "Time <= InitConstraint"
+driven :1110, string, "Time <= 0.0125", 
+
 joint :1110,
     total joint,
     1010,
@@ -1364,7 +1374,8 @@ joint :1110,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1111, string, "Time <= InitConstraint"
+driven :1111, string, "Time <= 0.0125", 
+
 joint :1111,
     total joint,
     1011,
@@ -1387,7 +1398,8 @@ joint :1111,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1112, string, "Time <= InitConstraint"
+driven :1112, string, "Time <= 0.0125", 
+
 joint :1112,
     total joint,
     1012,
@@ -1410,7 +1422,8 @@ joint :1112,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1113, string, "Time <= InitConstraint"
+driven :1113, string, "Time <= 0.0125", 
+
 joint :1113,
     total joint,
     1013,
@@ -1433,7 +1446,8 @@ joint :1113,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1114, string, "Time <= InitConstraint"
+driven :1114, string, "Time <= 0.0125", 
+
 joint :1114,
     total joint,
     1014,
@@ -1456,7 +1470,8 @@ joint :1114,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1115, string, "Time <= InitConstraint"
+driven :1115, string, "Time <= 0.0125", 
+
 joint :1115,
     total joint,
     1015,
@@ -1479,7 +1494,8 @@ joint :1115,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1116, string, "Time <= InitConstraint"
+driven :1116, string, "Time <= 0.0125", 
+
 joint :1116,
     total joint,
     1016,
@@ -1502,7 +1518,8 @@ joint :1116,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1117, string, "Time <= InitConstraint"
+driven :1117, string, "Time <= 0.0125", 
+
 joint :1117,
     total joint,
     1017,
@@ -1525,7 +1542,8 @@ joint :1117,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1118, string, "Time <= InitConstraint"
+driven :1118, string, "Time <= 0.0125", 
+
 joint :1118,
     total joint,
     1018,
@@ -1548,7 +1566,8 @@ joint :1118,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1119, string, "Time <= InitConstraint"
+driven :1119, string, "Time <= 0.0125", 
+
 joint :1119,
     total joint,
     1019,
@@ -1571,7 +1590,8 @@ joint :1119,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1120, string, "Time <= InitConstraint"
+driven :1120, string, "Time <= 0.0125", 
+
 joint :1120,
     total joint,
     1020,
@@ -1594,7 +1614,8 @@ joint :1120,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1121, string, "Time <= InitConstraint"
+driven :1121, string, "Time <= 0.0125", 
+
 joint :1121,
     total joint,
     1021,
@@ -1617,7 +1638,8 @@ joint :1121,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1122, string, "Time <= InitConstraint"
+driven :1122, string, "Time <= 0.0125", 
+
 joint :1122,
     total joint,
     1022,
@@ -1640,7 +1662,8 @@ joint :1122,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1123, string, "Time <= InitConstraint"
+driven :1123, string, "Time <= 0.0125", 
+
 joint :1123,
     total joint,
     1023,
@@ -1663,7 +1686,8 @@ joint :1123,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1124, string, "Time <= InitConstraint"
+driven :1124, string, "Time <= 0.0125", 
+
 joint :1124,
     total joint,
     1024,
@@ -1686,7 +1710,8 @@ joint :1124,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1125, string, "Time <= InitConstraint"
+driven :1125, string, "Time <= 0.0125", 
+
 joint :1125,
     total joint,
     1025,
@@ -1709,7 +1734,8 @@ joint :1125,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1126, string, "Time <= InitConstraint"
+driven :1126, string, "Time <= 0.0125", 
+
 joint :1126,
     total joint,
     1026,
@@ -1732,7 +1758,8 @@ joint :1126,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1127, string, "Time <= InitConstraint"
+driven :1127, string, "Time <= 0.0125", 
+
 joint :1127,
     total joint,
     1027,
@@ -1755,7 +1782,8 @@ joint :1127,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1128, string, "Time <= InitConstraint"
+driven :1128, string, "Time <= 0.0125", 
+
 joint :1128,
     total joint,
     1028,
@@ -1778,7 +1806,8 @@ joint :1128,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1129, string, "Time <= InitConstraint"
+driven :1129, string, "Time <= 0.0125", 
+
 joint :1129,
     total joint,
     1029,
@@ -1801,7 +1830,8 @@ joint :1129,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1130, string, "Time <= InitConstraint"
+driven :1130, string, "Time <= 0.0125", 
+
 joint :1130,
     total joint,
     1030,
@@ -1824,7 +1854,8 @@ joint :1130,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1131, string, "Time <= InitConstraint"
+driven :1131, string, "Time <= 0.0125", 
+
 joint :1131,
     total joint,
     1031,
@@ -1847,7 +1878,8 @@ joint :1131,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :1132, string, "Time <= InitConstraint"
+driven :1132, string, "Time <= 0.0125", 
+
 joint :1132,
     total joint,
     1032,
@@ -1864,6 +1896,31 @@ joint :1132,
                             1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                             3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     rotation orientation, reference, 1032,
+                            1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
+                            3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
+    position constraint,    active, active, active, null,
+    orientation constraint, active, active, active, null,
+    output, 0;
+
+#----Platform top initial total joint----
+driven :1501, string, "Time<=0.0125", 
+
+joint :1501,
+    total joint,
+    1500,
+    position,             reference, 1000, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    position orientation, reference, 1000,
+                            1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
+                            3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
+    rotation orientation, reference, 1000,
+                            1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
+                            3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
+    2001,
+    position,             reference, 1000, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    position orientation, reference, 1000,
+                            1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
+                            3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
+    rotation orientation, reference, 1000,
                             1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                             3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     position constraint,    active, active, active, null,
@@ -2015,13 +2072,13 @@ body :2020,
 joint :2001,
     deformable joint,
     1500,
-    position,    reference, 1790763840, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 1790763840,
+    position,    reference, 2001, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2001,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     2001,
-    position,    reference, 1790763840, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 1790763840,
+    position,    reference, 2001, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2001,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     linear viscoelastic generic,
@@ -2043,13 +2100,13 @@ joint :2001,
 joint :2002,
     deformable joint,
     2001,
-    position,    reference, 2001, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2001,
+    position,    reference, 2002, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2002,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     2002,
-    position,    reference, 2001, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2001,
+    position,    reference, 2002, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2002,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     linear viscoelastic generic,
@@ -2071,13 +2128,13 @@ joint :2002,
 joint :2003,
     deformable joint,
     2002,
-    position,    reference, 2002, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2002,
+    position,    reference, 2003, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2003,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     2003,
-    position,    reference, 2002, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2002,
+    position,    reference, 2003, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2003,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     linear viscoelastic generic,
@@ -2099,13 +2156,13 @@ joint :2003,
 joint :2004,
     deformable joint,
     2003,
-    position,    reference, 2003, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2003,
+    position,    reference, 2004, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2004,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     2004,
-    position,    reference, 2003, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2003,
+    position,    reference, 2004, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2004,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     linear viscoelastic generic,
@@ -2127,13 +2184,13 @@ joint :2004,
 joint :2005,
     deformable joint,
     2004,
-    position,    reference, 2004, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2004,
+    position,    reference, 2005, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2005,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     2005,
-    position,    reference, 2004, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2004,
+    position,    reference, 2005, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2005,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     linear viscoelastic generic,
@@ -2155,13 +2212,13 @@ joint :2005,
 joint :2006,
     deformable joint,
     2005,
-    position,    reference, 2005, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2005,
+    position,    reference, 2006, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2006,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     2006,
-    position,    reference, 2005, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2005,
+    position,    reference, 2006, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2006,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     linear viscoelastic generic,
@@ -2183,13 +2240,13 @@ joint :2006,
 joint :2007,
     deformable joint,
     2006,
-    position,    reference, 2006, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2006,
+    position,    reference, 2007, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2007,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     2007,
-    position,    reference, 2006, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2006,
+    position,    reference, 2007, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2007,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     linear viscoelastic generic,
@@ -2211,13 +2268,13 @@ joint :2007,
 joint :2008,
     deformable joint,
     2007,
-    position,    reference, 2007, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2007,
+    position,    reference, 2008, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2008,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     2008,
-    position,    reference, 2007, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2007,
+    position,    reference, 2008, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2008,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     linear viscoelastic generic,
@@ -2239,13 +2296,13 @@ joint :2008,
 joint :2009,
     deformable joint,
     2008,
-    position,    reference, 2008, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2008,
+    position,    reference, 2009, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2009,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     2009,
-    position,    reference, 2008, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2008,
+    position,    reference, 2009, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2009,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     linear viscoelastic generic,
@@ -2267,13 +2324,13 @@ joint :2009,
 joint :2010,
     deformable joint,
     2009,
-    position,    reference, 2009, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2009,
+    position,    reference, 2010, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2010,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     2010,
-    position,    reference, 2009, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2009,
+    position,    reference, 2010, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2010,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     linear viscoelastic generic,
@@ -2295,13 +2352,13 @@ joint :2010,
 joint :2011,
     deformable joint,
     2010,
-    position,    reference, 2010, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2010,
+    position,    reference, 2011, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2011,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     2011,
-    position,    reference, 2010, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2010,
+    position,    reference, 2011, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2011,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     linear viscoelastic generic,
@@ -2323,13 +2380,13 @@ joint :2011,
 joint :2012,
     deformable joint,
     2011,
-    position,    reference, 2011, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2011,
+    position,    reference, 2012, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2012,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     2012,
-    position,    reference, 2011, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2011,
+    position,    reference, 2012, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2012,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     linear viscoelastic generic,
@@ -2351,13 +2408,13 @@ joint :2012,
 joint :2013,
     deformable joint,
     2012,
-    position,    reference, 2012, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2012,
+    position,    reference, 2013, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2013,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     2013,
-    position,    reference, 2012, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2012,
+    position,    reference, 2013, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2013,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     linear viscoelastic generic,
@@ -2379,13 +2436,13 @@ joint :2013,
 joint :2014,
     deformable joint,
     2013,
-    position,    reference, 2013, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2013,
+    position,    reference, 2014, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2014,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     2014,
-    position,    reference, 2013, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2013,
+    position,    reference, 2014, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2014,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     linear viscoelastic generic,
@@ -2407,13 +2464,13 @@ joint :2014,
 joint :2015,
     deformable joint,
     2014,
-    position,    reference, 2014, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2014,
+    position,    reference, 2015, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2015,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     2015,
-    position,    reference, 2014, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2014,
+    position,    reference, 2015, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2015,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     linear viscoelastic generic,
@@ -2435,13 +2492,13 @@ joint :2015,
 joint :2016,
     deformable joint,
     2015,
-    position,    reference, 2015, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2015,
+    position,    reference, 2016, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2016,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     2016,
-    position,    reference, 2015, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2015,
+    position,    reference, 2016, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2016,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     linear viscoelastic generic,
@@ -2463,13 +2520,13 @@ joint :2016,
 joint :2017,
     deformable joint,
     2016,
-    position,    reference, 2016, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2016,
+    position,    reference, 2017, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2017,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     2017,
-    position,    reference, 2016, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2016,
+    position,    reference, 2017, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2017,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     linear viscoelastic generic,
@@ -2491,13 +2548,13 @@ joint :2017,
 joint :2018,
     deformable joint,
     2017,
-    position,    reference, 2017, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2017,
+    position,    reference, 2018, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2018,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     2018,
-    position,    reference, 2017, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2017,
+    position,    reference, 2018, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2018,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     linear viscoelastic generic,
@@ -2519,13 +2576,13 @@ joint :2018,
 joint :2019,
     deformable joint,
     2018,
-    position,    reference, 2018, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2018,
+    position,    reference, 2019, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2019,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     2019,
-    position,    reference, 2018, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2018,
+    position,    reference, 2019, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2019,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     linear viscoelastic generic,
@@ -2547,13 +2604,13 @@ joint :2019,
 joint :2020,
     deformable joint,
     2019,
-    position,    reference, 2019, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2019,
+    position,    reference, 2020, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2020,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     2020,
-    position,    reference, 2019, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-    orientation, reference, 2019,
+    position,    reference, 2020, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    orientation, reference, 2020,
                          1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                          3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     linear viscoelastic generic,
@@ -2601,7 +2658,8 @@ joint :2021,
     output, 0;
 
 #----Tower initial total joint-----
-driven :2101, string, "Time <= InitConstraint"
+driven :2101, string, "Time <= 0.0125", 
+
 joint :2101,
     total joint,
     2001,
@@ -2624,7 +2682,8 @@ joint :2101,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :2102, string, "Time <= InitConstraint"
+driven :2102, string, "Time <= 0.0125", 
+
 joint :2102,
     total joint,
     2002,
@@ -2647,7 +2706,8 @@ joint :2102,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :2103, string, "Time <= InitConstraint"
+driven :2103, string, "Time <= 0.0125", 
+
 joint :2103,
     total joint,
     2003,
@@ -2670,7 +2730,8 @@ joint :2103,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :2104, string, "Time <= InitConstraint"
+driven :2104, string, "Time <= 0.0125", 
+
 joint :2104,
     total joint,
     2004,
@@ -2693,7 +2754,8 @@ joint :2104,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :2105, string, "Time <= InitConstraint"
+driven :2105, string, "Time <= 0.0125", 
+
 joint :2105,
     total joint,
     2005,
@@ -2716,7 +2778,8 @@ joint :2105,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :2106, string, "Time <= InitConstraint"
+driven :2106, string, "Time <= 0.0125", 
+
 joint :2106,
     total joint,
     2006,
@@ -2739,7 +2802,8 @@ joint :2106,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :2107, string, "Time <= InitConstraint"
+driven :2107, string, "Time <= 0.0125", 
+
 joint :2107,
     total joint,
     2007,
@@ -2762,7 +2826,8 @@ joint :2107,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :2108, string, "Time <= InitConstraint"
+driven :2108, string, "Time <= 0.0125", 
+
 joint :2108,
     total joint,
     2008,
@@ -2785,7 +2850,8 @@ joint :2108,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :2109, string, "Time <= InitConstraint"
+driven :2109, string, "Time <= 0.0125", 
+
 joint :2109,
     total joint,
     2009,
@@ -2808,7 +2874,8 @@ joint :2109,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :2110, string, "Time <= InitConstraint"
+driven :2110, string, "Time <= 0.0125", 
+
 joint :2110,
     total joint,
     2010,
@@ -2831,7 +2898,8 @@ joint :2110,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :2111, string, "Time <= InitConstraint"
+driven :2111, string, "Time <= 0.0125", 
+
 joint :2111,
     total joint,
     2011,
@@ -2854,7 +2922,8 @@ joint :2111,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :2112, string, "Time <= InitConstraint"
+driven :2112, string, "Time <= 0.0125", 
+
 joint :2112,
     total joint,
     2012,
@@ -2877,7 +2946,8 @@ joint :2112,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :2113, string, "Time <= InitConstraint"
+driven :2113, string, "Time <= 0.0125", 
+
 joint :2113,
     total joint,
     2013,
@@ -2900,7 +2970,8 @@ joint :2113,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :2114, string, "Time <= InitConstraint"
+driven :2114, string, "Time <= 0.0125", 
+
 joint :2114,
     total joint,
     2014,
@@ -2923,7 +2994,8 @@ joint :2114,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :2115, string, "Time <= InitConstraint"
+driven :2115, string, "Time <= 0.0125", 
+
 joint :2115,
     total joint,
     2015,
@@ -2946,7 +3018,8 @@ joint :2115,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :2116, string, "Time <= InitConstraint"
+driven :2116, string, "Time <= 0.0125", 
+
 joint :2116,
     total joint,
     2016,
@@ -2969,7 +3042,8 @@ joint :2116,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :2117, string, "Time <= InitConstraint"
+driven :2117, string, "Time <= 0.0125", 
+
 joint :2117,
     total joint,
     2017,
@@ -2992,7 +3066,8 @@ joint :2117,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :2118, string, "Time <= InitConstraint"
+driven :2118, string, "Time <= 0.0125", 
+
 joint :2118,
     total joint,
     2018,
@@ -3015,7 +3090,8 @@ joint :2118,
     orientation constraint, active, active, active, null,
     output, 0;
 
-driven :2119, string, "Time <= InitConstraint"
+driven :2119, string, "Time <= 0.0125", 
+
 joint :2119,
     total joint,
     2019,
@@ -3032,6 +3108,31 @@ joint :2119,
                             1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                             3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     rotation orientation, reference, 2019,
+                            1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
+                            3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
+    position constraint,    active, active, active, null,
+    orientation constraint, active, active, active, null,
+    output, 0;
+
+#----Tower top initial total joint-----
+driven :2501, string, "Time <= 0.0125", 
+
+joint :2501,
+    total joint,
+    2020,
+    position,             reference, 1500, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    position orientation, reference, 1500,
+                            1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
+                            3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
+    rotation orientation, reference, 1500,
+                            1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
+                            3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
+    2500,
+    position,             reference, 1500, 0.00000e+00, 0.00000e+00, 0.00000e+00,
+    position orientation, reference, 1500,
+                            1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
+                            3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
+    rotation orientation, reference, 1500,
                             1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                             3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
     position constraint,    active, active, active, null,

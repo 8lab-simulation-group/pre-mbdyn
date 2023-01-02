@@ -29,9 +29,13 @@ class Tower {
     double TwrRBHt;
     double TwrFlexL;
     double DHNodes;
+    double InitConstraint = 0.0125;
 
     Frame Tower_reference;
     ReferenceFrame tower_top_reference;
+    ReferenceFrame tower_top_ref;
+    Node tower_top_node;
+    TotalJoint tower_top_joint;
 
     // Towerを構成するノードとエレメントの変数。vectorで宣言し、後ほど要素数に応じて容量を確保する。
     std::vector<ReferenceFrame> references;

@@ -29,7 +29,10 @@ Tower::Tower(int label, const ReferenceFrame &towerbase, InputData *ID)
     double tower_top_height = inputdata ->get_value("TowerHt"); 
     Vec3d tower_top(0.,0.,tower_top_height);
     Frame offset(tower_label + 500, tower_top, eye3x3, zero3, zero3);
+    tower_top_node = Node(tower_label + 500, tower_base_reference, offset_null, 1);
     tower_top_reference = ReferenceFrame(tower_label + 500, tower_base_reference, offset);
+    tower_top_ref = ReferenceFrame(tower_label + 500 +1, tower_base_reference, offset_null);
+    tower_top_joint = TotalJoint(tower_label + 500 + 1, 2020, tower_label + 500, tower_top_ref, "Total", 0);
 
     set_reference();
     set_nodes();
@@ -589,8 +592,7 @@ Tower::set_deformablejoint() {
         Frame base_frame;
         // その座標系からのoffset拘束点はnode1の場所とするので、offsetはなし
         Frame offset = offset_null;
-        // jointの位置を指定する座標系
-        ReferenceFrame joint_position(joint_label, base_frame, offset);
+        
 
         Mat6x6d kMatrix = zero6x6;
         Mat6x6d Cmatrix = zero6x6;
@@ -684,6 +686,8 @@ Tower::set_deformablejoint() {
           Cmatrix.set(4,2) = Cmatrix.set(2,4);
         }
 
+        // jointの位置を指定する座標系
+        ReferenceFrame joint_position(joint_label, base_frame, offset);
 
         deformable_joints[i] = DeformableJoint(joint_label, curr_node1, curr_node2, joint_position, kMatrix,Cmatrix, 0);
     }
@@ -727,6 +731,9 @@ Tower::write_nodes_in(std::ofstream &output_file) const {
     for(const Node &nod : nodes) {
         nod.write_node(output_file);
     }
+
+    output_file << "#----Tower top node----" << std::endl;
+    tower_top_node.write_node(output_file);
 }
 
 void
@@ -742,9 +749,13 @@ Tower::write_elements_in(std::ofstream &output_file) const {
     }
     output_file << "#----Tower initial total joint-----" <<std::endl;
     for(const TotalJoint &ttj : total_joints ) {
-        output_file << "driven :"<<ttj.get_label()<<", " <<"string, \"Time <= InitConstraint\""<<std::endl;
+        output_file << "driven :"<<ttj.get_label()<<", " <<"string, \"Time <= 0.0125\""  <<", " << std::endl;
         ttj.write_in_file(output_file);
     }
+
+    output_file << "#----Tower top initial total joint-----" <<std::endl;
+    output_file << "driven :"<<tower_label + 500 + 1<<", " <<"string, \"Time <= 0.0125\""  <<", " << std::endl;
+    tower_top_joint.write_in_file(output_file);
 }
 
 int 
