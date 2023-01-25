@@ -51,6 +51,10 @@ public:
                 m_x[2][1] = d32;
                 m_x[2][2] = d33;
             }
+    
+    double &set(int index1, int index2) {
+        return m_x[index1][index2];
+    }
 
     double &operator [](int index)
     {
