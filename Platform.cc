@@ -37,7 +37,7 @@ Platform::Platform(int label, InputData *ID)
     double ptfm_top_height = -1*inputdata->get_value("TwrDraft"); //mslからのdraftで入力しているので、座標系を換算しておく
     Vec3d ptfm_top(0.,0.,ptfm_top_height);
     Frame offset(platform_label + 500, ptfm_top, eye3x3, zero3, zero3);
-    ptfm_top_node = Node(platform_label + 500, ptfm_reference, offset_null,1);
+    ptfm_top_node = Node(platform_label + 500, ptfm_reference, offset,1);
     ptfm_top_reference = ReferenceFrame(platform_label + 500, ptfm_reference, offset);
     ptfm_top_ref = ReferenceFrame(platform_label + 500, ptfm_reference, offset_null);
     ptfm_top_joint = TotalJoint(platform_label + 500 +1 , platform_label + 500 , 2001, ptfm_top_ref, "Total", 0);

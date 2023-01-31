@@ -98,8 +98,8 @@ private:
         "DTTorDmp"         ,
         "YawSpr"           ,
         "YawDamp"          ,
-        "LSSLEngth"        ,
-        "HSSLEngth"        ,
+        "LSSLength"        ,
+        "HSSLength"        ,
         "GenLength"        ,
 
         "PtfmSurge"        ,

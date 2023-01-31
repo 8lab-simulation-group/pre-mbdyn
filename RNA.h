@@ -49,7 +49,6 @@ class  RNA {
     Vec3d PitchPlate2;
     Vec3d PitchPlate3;
 
-
     Frame RNA_reference;
     Frame Bld_base_node1;
     Frame Bld_base_node2;
@@ -63,7 +62,7 @@ class  RNA {
     std::vector<ReferenceFrame> references;
     std::vector<Node>   nodes;
     std::vector<RigidBody>  rigidbodies;
-    //std::vector<revoluteHinge> revolute_hinges;
+    std::vector<RevoluteJoint> revolute_hinges;
     std::vector<DeformableHinge> deformable_hinge;
     //解析初期のみ、deformable jointを全てTotal jointで拘束して解析初期の安定性を確保している。
     std::vector<TotalJoint> total_joints;
@@ -79,7 +78,9 @@ class  RNA {
     void write_nodes_in(std::ofstream &ofs) const;
     void write_elements_in(std::ofstream &ofs) const;
 
-    //const ReferenceFrame get_top_reference() const {return Bld_base_reference;};
+    const ReferenceFrame get_top_reference() const {return Bld_base_reference1;};
+    //const ReferenceFrame get_top_reference() const {return Bld_base_reference2;};
+    //const ReferenceFrame get_top_reference() const {return Bld_base_reference3;};
     int get_num_nodes() const;
     int get_num_rigid_bodies() const;
     int get_num_joints() const;
@@ -88,7 +89,8 @@ class  RNA {
     void set_reference();
     void set_nodes();
     void set_rigidbodies();
-    void set_deformablejoint();
+    void set_deformable_hinge();
+    void set_revolute_hinge();
     void set_total_joint();
 };
 
