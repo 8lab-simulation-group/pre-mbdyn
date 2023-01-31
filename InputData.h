@@ -45,6 +45,7 @@ private:
         "NumBl"       ,
         "TwrNodes"    ,
         "BldNodes"    ,
+        "NacelleNodes",
 
         "PtfmSgDOF"   ,
         "PtfmSwDOF"   ,
@@ -89,6 +90,7 @@ private:
         "NacYIner"         ,
         "GenIner"          ,
         "HubIner"          ,
+        "SmllNmBr"         ,
         "GBoxEff"          ,
         "GenEff"           ,
         "GBRatio"          ,
@@ -96,6 +98,9 @@ private:
         "DTTorDmp"         ,
         "YawSpr"           ,
         "YawDamp"          ,
+        "LSSLength"        ,
+        "HSSLength"        ,
+        "GenLength"        ,
 
         "PtfmSurge"        ,
         "PtfmSway"         ,

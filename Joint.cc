@@ -325,7 +325,7 @@ DeformableHinge::write_in_file(std::ofstream &ofs) const {
         << "    linear viscoelastic, " << spring_coefficient << ", " << dumper_coefficient << "," <<std::endl
         << "    output, " << out_flg << ";" <<std::endl << std::endl;
 }
-    
+  
 void 
 DeformableHinge::print_element() const {
     int base_label = constraint_position.get_base_frame().get_label();

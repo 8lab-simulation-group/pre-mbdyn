@@ -5,7 +5,6 @@
 Tower::Tower(int label, const ReferenceFrame &towerbase, InputData *ID) 
 : tower_label(label), tower_base_reference(towerbase), inputdata(ID) // const メンバ変数を引数で初期化
 {
-
     num_reference = inputdata ->get_value("TwrNodes");
     num_nodes = num_reference;
     num_rigidbodies = num_reference;
@@ -26,13 +25,13 @@ Tower::Tower(int label, const ReferenceFrame &towerbase, InputData *ID)
     total_joints.resize(num_total_joints);
 
     // tower top　のReferanceFrameを作る、この座標系はClass RNAに渡す
-    double tower_top_height = inputdata ->get_value("TowerHt"); 
+    double tower_top_height = TwrFlexL; 
     Vec3d tower_top(0.,0.,tower_top_height);
     Frame offset(tower_label + 500, tower_top, eye3x3, zero3, zero3);
-    tower_top_node = Node(tower_label + 500, tower_base_reference, offset_null, 1);
+    tower_top_node = Node(tower_label + 500, tower_base_reference, offset, 1);
     tower_top_reference = ReferenceFrame(tower_label + 500, tower_base_reference, offset);
     tower_top_ref = ReferenceFrame(tower_label + 500 +1, tower_base_reference, offset_null);
-    tower_top_joint = TotalJoint(tower_label + 500 + 1, 2020, tower_label + 500, tower_top_ref, "Total", 0);
+    tower_top_joint = TotalJoint(tower_label + 500 + 1, tower_label + num_nodes, tower_label + 500, tower_top_ref, "Total", 0);
 
     set_reference();
     set_nodes();

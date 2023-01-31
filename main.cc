@@ -1,8 +1,9 @@
 #include "InputData.h"
 #include "Platform.h"
 #include "Tower.h"
+#include "RNA.h"
 
-void output(Platform &ptfm, Tower &Tower);
+void output(Platform &ptfm, Tower &Tower, RNA &RNA);
 
 int main(int argc, char *argv[]){
 
@@ -13,18 +14,19 @@ int main(int argc, char *argv[]){
 
     const int platform_label = 1000;
     const int tower_label    = 2000;
-    const int rna_label      = 3000;
+    const int nacelle_label  = 3000;
     const int blade_label    =10000;
 
     // コンストラクタ内でデータを加工し、mbdynのフォームに会わせてアウトプット可能な形式でデータを保管する
     Platform platform(platform_label, &inputdata);
     Tower Tower(tower_label, platform.get_top_reference(), &inputdata);
-    output(platform ,Tower);
+    RNA RNA(nacelle_label, Tower.get_top_reference(), &inputdata);
+    output(platform , Tower, RNA);
 
     return 0;
 }
 
-void output(Platform &platform, Tower &Tower) {
+void output(Platform &platform, Tower &Tower, RNA &RNA) {
     const std::string out_file_name_base = "NREL5MW_OC3Hywind_MBDyn";
 
     //--------------output Reference----------------------------
@@ -37,6 +39,7 @@ void output(Platform &platform, Tower &Tower) {
     // writing reference in the file
     platform.write_reference_in(writing_file_reference);
     Tower.write_reference_in(writing_file_reference);
+    RNA.write_reference_in(writing_file_reference);
 
     //------------output nodes -----------------------------------
     const std::string out_file_name_node = out_file_name_base + std::string(".nod");
@@ -46,6 +49,7 @@ void output(Platform &platform, Tower &Tower) {
 
     platform.write_nodes_in(writing_file_node);
     Tower.write_nodes_in(writing_file_node);
+    RNA.write_nodes_in(writing_file_node);
 
     //-----------output element -------------------------------------
     const std::string out_file_name_elem = out_file_name_base + std::string(".elm");
@@ -55,5 +59,6 @@ void output(Platform &platform, Tower &Tower) {
 
     platform.write_elements_in(writing_file_elem);
     Tower.write_elements_in(writing_file_elem);
+    RNA.write_elements_in(writing_file_elem);
 
 }
