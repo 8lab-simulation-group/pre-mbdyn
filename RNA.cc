@@ -60,7 +60,7 @@ RNA::RNA(int label, const ReferenceFrame &nacellebase, InputData *ID)
     Vec3d e1_1(Rshft_rotorfurl.set(0,0) , Rshft_rotorfurl.set(1,0), Rshft_rotorfurl.set(2,0));
     Vec3d e3_1(Rshft_rotorfurl.set(0,2), Rshft_rotorfurl.set(1,2), Rshft_rotorfurl.set(2,2));
     Frame offset = Frame(nacelle_label + 400, position_offset, e1_1, e3_1, velocity_offset, angular_velocity_offset);
-    ReferenceFrame Hub_reference = ReferenceFrame(nacelle_label + 500, nacelle_base_reference, offset);
+    Hub_reference = ReferenceFrame(nacelle_label + 500, nacelle_base_reference, offset);
     
 
     for (int i=0; i<num_blds; i++) {
@@ -472,7 +472,7 @@ RNA::set_deformable_hinge() {
     Vec3d angular_velocity_offset = zero3;
     Frame offset = Frame(3021, position_offset, e1, e3, velocity_offset, angular_velocity_offset);
     ReferenceFrame joint_position = ReferenceFrame(joint_label, base_frame, offset);
-    deformable_hinge[i] = DeformableHinge(joint_label, curr_node1, curr_node2, joint_position, K, C, 1);
+    deformable_hinge[i] = DeformableHinge(joint_label, curr_node1, curr_node2, joint_position, K, C, 0);
     }
 
 }
@@ -609,10 +609,19 @@ RNA::set_total_joint() {
 
 void
 RNA::write_reference_in(std::ofstream &output_file) const {
-    //output_file<<"#-----Tower Top Reference------"<<std::endl;
-    //tower_top_reference.write_reference(output_file);
+    output_file<<"#-----Hub Reference------"<<std::endl;
+    Hub_reference.write_reference(output_file);
 
-    output_file<<"#----RNA node reference----"<<std::endl;
+    output_file<<"#-----PitchPlate1 Reference------"<<std::endl;
+    Bld_base_reference1.write_reference(output_file);
+
+    output_file<<"#-----PitchPlate2 Reference------"<<std::endl;
+    Bld_base_reference2.write_reference(output_file);
+
+    output_file<<"#-----PitchPlate3 Reference------"<<std::endl;
+    Bld_base_reference3.write_reference(output_file);
+
+    output_file<<"#----RNA reference----"<<std::endl;
 
     for(const ReferenceFrame &flm : references) {
         flm.write_reference(output_file);
@@ -626,8 +635,18 @@ RNA::write_nodes_in(std::ofstream &output_file) const {
         nod.write_node(output_file);
     }
 
+    output_file<<"#------PitchPlate1 node---------"<<std::endl;
+    Bld_base_node1.write_node(output_file);
+
+    output_file<<"#------PitchPlate2 node---------"<<std::endl;
+    Bld_base_node2.write_node(output_file);
+
+    output_file<<"#------PitchPlate3 node---------"<<std::endl;
+    Bld_base_node3.write_node(output_file);
+
     //output_file << "#----Tower top node----" << std::endl;
     //tower_top_node.write_node(output_file);
+    
 }
 
 void
@@ -640,7 +659,6 @@ RNA::write_elements_in(std::ofstream &output_file) const {
     
     output_file << "#----RNA total joint-----" <<std::endl;
     for(const TotalJoint &ttj : total_joints ) {
-        output_file << "driven :"<<ttj.get_label()<<", " <<"string"  <<", " << std::endl;
         ttj.write_in_file(output_file);
     }
 
@@ -675,3 +693,22 @@ RNA::get_num_joints() const {
     // RNA joints 
     return num_total_joints ;
 }
+
+const ReferenceFrame 
+RNA::get_top_reference(int i) const 
+{
+    if(i==1){
+    return Bld_base_reference1;
+    }
+    if(i==2){
+    return Bld_base_reference2;
+    }
+    if(i==3){
+    return Bld_base_reference3;
+    }     
+
+    Frame temp1(1,zero3,eye3x3,zero3,zero3);
+    Frame temp2(2,zero3,eye3x3,zero3,zero3);
+
+    return ReferenceFrame(1,temp1,temp2); 
+};

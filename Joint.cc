@@ -100,7 +100,7 @@ TotalJoint::write_in_file(std::ofstream &ofs) const {
             << "                            1, " << offset_e1 << "," <<std::endl
             << "                            3, " << offset_e3 << "," <<std::endl
             << "    position constraint,    inactive, inactive, inactive, null," <<std::endl
-            << "    orientation constraint, inactive, inactive, active," <<std::endl
+            << "    orientation constraint, inactive, inactive, angular velocity," <<std::endl
             << "    component, const, "<<init_angular_velocity[0]<<", const, "<<init_angular_velocity<<", const, "<<init_angular_velocity[2]<<","<<std::endl
             << "    output, " << out_flg << ";"<<std::endl<<std::endl;        
     }
@@ -311,7 +311,7 @@ DeformableHinge::write_in_file(std::ofstream &ofs) const {
 
     ofs << std::scientific<<std::setprecision(5)
         << "joint :" << elem_label << "," <<std::endl
-        << "    revolute hinge," << std::endl
+        << "    deformable hinge," << std::endl
         << "    " << node_label[0] << "," <<std::endl
         << "    position,    reference, " << base_label << ", "<<offset_position << ","<< std::endl
         << "    orientation, reference, " << base_label << ","   << std::endl

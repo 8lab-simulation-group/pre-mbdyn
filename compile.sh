@@ -12,6 +12,7 @@ g++ -c Joint.cc
 g++ -c Platform.cc
 g++ -c Tower.cc
 g++ -c RNA.cc
+g++ -c Blade.cc
 g++ -c main.cc
 g++ -c InputData.cc
 

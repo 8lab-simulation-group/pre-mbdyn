@@ -82,3 +82,8 @@ ReferenceFrame::print_reference() {
        <<"    reference, " <<base_label<<", "<< offset_angular_velocity <<";"<<std::endl<<std::endl;
 }
 
+void 
+ReferenceFrame::print_reference_global() {
+    Frame::print_reference();
+}
+

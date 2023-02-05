@@ -605,7 +605,7 @@ Tower::set_deformablejoint() {
         if(i==0) {
           curr_node1 = 1500;
           curr_node2 = nodes[i].get_label();
-          base_frame = nodes[i].get_frame();
+          base_frame = nodes[i].get_frame();  // 修正したから確認必要
           double TmpLength = 0.5 * DHNodes;
           double TmpLength2 = TmpLength * TmpLength;
           double TmpLength3 = TmpLength2 * TmpLength;
@@ -632,7 +632,7 @@ Tower::set_deformablejoint() {
         }else if(i>0 && i<num_deformable_joints-1) {
           curr_node1 = nodes[i-1].get_label();
           curr_node2 = nodes[i].get_label();
-          base_frame = nodes[i].get_frame();
+          base_frame = nodes[i-1].get_frame();
           double TmpLength = DHNodes;
           double TmpLength2 = TmpLength * TmpLength;
           double TmpLength3 = TmpLength2 * TmpLength;

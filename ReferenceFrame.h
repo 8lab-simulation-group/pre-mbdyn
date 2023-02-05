@@ -15,8 +15,9 @@ class ReferenceFrame : public Frame{
     ReferenceFrame(const ReferenceFrame &reffelm);
     ~ReferenceFrame(){};
 
-    void print_reference() ;
+    void print_reference();
     void write_reference(std::ofstream &out) const;
+    void print_reference_global();
 
     private:
     Frame make_reference_frame(int label,const Frame &base_frame, const Frame &relative_frame);
