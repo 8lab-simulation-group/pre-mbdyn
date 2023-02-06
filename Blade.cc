@@ -35,7 +35,7 @@ Blade::Blade(int own_num,int label, const ReferenceFrame &Bladebase, InputData *
 
     // BMass, StiffBF(FlpStff), StiffBEA(EAStff), StiffBE(EdgStff), StiffBGJ(GJStff), FlpIner, EdgInerの線形補間
     // x:BlFract, y:線形補間したい変数
-    std::cout<<"7"<<std::endl;
+
     for(int i=0; i<num; i++) {
       BldFlexL = inputdata->get_value("TipRad") - inputdata->get_value("HubRad");
       double XVal = (inputdata->get_value("RNodes", i+1) - inputdata->get_value("HubRad"))/BldFlexL;
@@ -240,15 +240,11 @@ Blade::Blade(int own_num,int label, const ReferenceFrame &Bladebase, InputData *
       InterpEdgcgOf[i] = (EdgcgOf2-EdgcgOf1) * (XVal-XAray1)/(XAray2-XAray1) + EdgcgOf1;  
 
     }
-std::cout<<"8"<<std::endl;
+
     set_reference();
-    std::cout<<"9"<<std::endl;
     set_nodes();
-    std::cout<<"10"<<std::endl;
     set_rigidbodies();
-    std::cout<<"11"<<std::endl;
     set_deformablejoint();
-    std::cout<<"12"<<std::endl;
     set_total_joint();
 }
 
@@ -276,7 +272,7 @@ Blade::set_reference() {
         else if(i>0 && i<num+1) {
 
         Vec3d positon_offset = Vec3d(0.,0.,inputdata->get_value("RNodes",i) - inputdata->get_value("HubRad"));
-        double theta = inputdata->get_value("AeroTwst",i);
+        double theta = inputdata->get_value("AeroTwst",i)*M_PI/180;
         //　元の座標系(pitch plate)に対して、３軸周りにthetaだけ回転する
         //  そして、1軸と3軸を入れ替える
 
@@ -363,14 +359,8 @@ Blade::set_reference() {
         references[i] = ReferenceFrame(blade_label+i+400,bld_base_reference1,offset_TpBr);
         } */    
       
-      
-      
-      
       }
 
-    
-
-  
     //上記の分でnodeの定義に使うrefereceが出力される。仮に追加で必要になったら、以下の方法で追加できる。
     // reference.push_back( ReferenceFrame(********) )
 }
@@ -440,7 +430,7 @@ Blade::set_deformablejoint() {
     
     double KBF = 0.0;
     double KBE = 0.0;
-std::cout<<"13"<<std::endl;
+
     for(int j=0; j<num; j++) {
 
       double SHPKBF = 0.0;
@@ -469,12 +459,12 @@ std::cout<<"13"<<std::endl;
       KBF = KBF + ElStffFlp * SHPKBF * SHPKBF;  
       KBE = KBE + ElStffBE * SHPKBE * SHPKBE;  
     }
-std::cout<<"14"<<std::endl;
+
     //  MBF & MBE
 
     double MBF = 0.0;
     double MBE = 0.0;
-std::cout<<"15"<<std::endl;
+
     for(int j=0; j<num; j++) {
 
       double SHPMBF = 0.0;
@@ -497,7 +487,7 @@ std::cout<<"15"<<std::endl;
       MBF = MBF + ElmntBldMass * SHPMBF * SHPMBF;
       MBE = MBE + ElmntBldMass * SHPMBE * SHPMBE;
     }
-std::cout<<"16"<<std::endl;
+
     
     double TipMass = 0.0;
     double FreqBF = 0.5/M_PI * sqrt(KBF/(MBF-TipMass));
@@ -507,7 +497,7 @@ std::cout<<"16"<<std::endl;
     double CRatioBEd;
     double CRatioBEA;
     double CRatioBGJ;
-std::cout<<"17"<<std::endl;
+
     for(int i=0; i<num_deformable_joints; i++) {
  
         int curr_node1;
@@ -624,7 +614,7 @@ std::cout<<"17"<<std::endl;
 
         deformable_joints[i] = DeformableJoint(joint_label, curr_node1, curr_node2, joint_position, kMatrix,Cmatrix, 0);
     }
-  std::cout<<"18"<<std::endl;
+
 }
 
 void
@@ -668,19 +658,25 @@ Blade::write_nodes_in(std::ofstream &output_file) const {
 }
 
 void
-Blade::write_elements_in(std::ofstream &output_file) const {
+Blade::write_rigidbodies_in(std::ofstream &output_file) const {
 
     output_file << "#----Blade Rigid Bodies-----" <<std::endl;
     for(const RigidBody &rbd : rigidbodies){
         rbd.write_in_file(output_file);
     }
+
+}
+
+void
+Blade::write_joints_in(std::ofstream &output_file) const {
+
     output_file << "#----Blade defomable joint-----" <<std::endl;
     for(const DeformableJoint &dfj : deformable_joints) {
         dfj.write_in_file(output_file);
     }
     output_file << "#----Blade initial total joint-----" <<std::endl;
     for(const TotalJoint &ttj : total_joints ) {
-        output_file << "driven :"<<ttj.get_label()<<", " <<"string, \"Time <= 0.0125\""  <<", " << std::endl;
+        output_file << "driven :"<<ttj.get_label()<<", " <<"string, \"Time <= InitBldDeformContTime\""  <<", " << std::endl;
         ttj.write_in_file(output_file);
     }
 

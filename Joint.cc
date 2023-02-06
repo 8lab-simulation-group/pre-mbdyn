@@ -110,7 +110,9 @@ TotalJoint::write_in_file(std::ofstream &ofs) const {
             << "                            3, " << offset_e3 << "," <<std::endl
             << "    position constraint,    inactive, inactive, inactive, null," <<std::endl
             << "    orientation constraint, inactive, inactive, angular velocity," <<std::endl
-            << "    component, const, "<<init_angular_velocity[0]<<", const, "<<init_angular_velocity[1]<<", const, "<<init_angular_velocity[2]<<","<<std::endl
+            << "    component, const, 0.0 , const, 0.0,"<<std::endl
+            << "               drive, string, \"-Var\","<<std::endl
+            << "               cosine, 0.0, pi/InitRotSpdContTime,"<<init_angular_velocity[2]<<"/2.0,half,0.,"<<std::endl
             << "    output, " << out_flg << ";"<<std::endl<<std::endl;        
     }
     else if (constraint_condition == "BearingLock") {

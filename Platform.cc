@@ -470,29 +470,6 @@ Platform::write_nodes_in(std::ofstream &output_file) const {
     //ptfm_top_node.write_node(output_file);
 }
 
-void
-Platform::write_elements_in(std::ofstream &output_file) const {
-    output_file << "#----Ground Clamp Joint -------" <<std::endl;
-    ground_joint.write_in_file(output_file);
-
-    output_file << "#----Platfrom Rigid Bodies-----" <<std::endl;
-    for(const RigidBody &rbd : rigidbodies){
-        rbd.write_in_file(output_file);
-    }
-    output_file << "#----Platfrom defomable joint-----" <<std::endl;
-    for(const DeformableJoint &dfj : deformable_joints) {
-        dfj.write_in_file(output_file);
-    }
-    output_file << "#----Platfrom initial total joint-----" <<std::endl;
-    for(const TotalJoint &ttj : total_joints ) {
-        output_file << "driven :"<<ttj.get_label()<<", " <<"string, \"Time <="" 0.0125\""<< ", " << std::endl;
-        ttj.write_in_file(output_file);
-    }
-
-    output_file << "#----Platform top initial total joint----" <<std::endl;
-    output_file << "driven :"<<platform_label + 500 + 1<<", "<<"string, \"Time<=""0.0125\""<< ", " << std::endl;
-    ptfm_top_joint.write_in_file(output_file);
-}
 
 void
 Platform::write_rigidbodies_in(std::ofstream &output_file) const {
@@ -515,11 +492,11 @@ Platform::write_joints_in(std::ofstream &output_file) const {
         dfj.write_in_file(output_file);
     }
     output_file << "#----Platfrom initial total joint-----" <<std::endl;
-    output_file << "driven :"<<ptfm_lock.get_label()<<", " <<"string, \"Time <="" 0.0125\""<< ", " << std::endl;
+    output_file << "driven :"<<ptfm_lock.get_label()<<", " <<"string, \"Time <=PtfmRockTime\""<< ", " << std::endl;
     ptfm_lock.write_in_file(output_file);
 
     for(const TotalJoint &ttj : total_joints ) {
-        output_file << "driven :"<<ttj.get_label()<<", " <<"string, \"Time <="" 0.0125\""<< ", " << std::endl;
+        output_file << "driven :"<<ttj.get_label()<<", " <<"string, \"Time<=InitPtfmDeformContTime\""<< ", " << std::endl;
         ttj.write_in_file(output_file);
     }
 

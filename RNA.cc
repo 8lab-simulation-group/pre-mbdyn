@@ -649,33 +649,7 @@ RNA::write_nodes_in(std::ofstream &output_file) const {
     
 }
 
-void
-RNA::write_elements_in(std::ofstream &output_file) const {
 
-    output_file << "#----RNA Rigid Bodies-----" <<std::endl;
-    for(const RigidBody &rbd : rigidbodies){
-        rbd.write_in_file(output_file);
-    }
-    
-    output_file << "#----RNA total joint-----" <<std::endl;
-    for(const TotalJoint &ttj : total_joints ) {
-        ttj.write_in_file(output_file);
-    }
-
-    output_file << "#----RNA defomable Hinge-----" <<std::endl;
-    for(const DeformableHinge &dfh : deformable_hinge) {
-        dfh.write_in_file(output_file);
-    }
-
-    output_file << "#----RNA Revolute Hinge-----" <<std::endl;
-    for(const RevoluteJoint &rvj : revolute_hinges) {
-        rvj.write_in_file(output_file);
-    }
-
-    //output_file << "#----Tower top initial total joint-----" <<std::endl;
-    //output_file << "driven :"<<tower_label + 500 + 1<<", " <<"string, \"Time <= 0.0125\""  <<", " << std::endl;
-    //tower_top_joint.write_in_file(output_file);
-}
 
 int 
 RNA::get_num_nodes() const {

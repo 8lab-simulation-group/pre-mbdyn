@@ -58,7 +58,6 @@ class Tower {
     public:
     void write_reference_in(std::ofstream &output_file) const;
     void write_nodes_in(std::ofstream &ofs) const;
-    void write_elements_in(std::ofstream &ofs) const;
     void write_rigidbodies_in(std::ofstream &ofs) const;
     void write_joints_in(std::ofstream &ofs) const;
 

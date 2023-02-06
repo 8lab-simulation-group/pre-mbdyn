@@ -380,7 +380,7 @@ Nacelle::write_joints_in(std::ofstream &output_file) const {
     HSS_bearing_revolute.write_in_file(output_file);
 
     output_file<<"#initial lock"<<std::endl;
-    output_file << "driven :"<<HSS_bearing_lock.get_label()<<", " <<"string, \"Time <="" 0.0125\""<< ", " << std::endl;
+    output_file << "driven :"<<HSS_bearing_lock.get_label()<<", " <<"string, \"Time<=InitRotSpdContTime\""<< ", " << std::endl;
     HSS_bearing_lock.write_in_file(output_file);
 
     output_file<<"#----- HSS-Generator joint ------"<<std::endl;
@@ -392,7 +392,7 @@ Nacelle::write_joints_in(std::ofstream &output_file) const {
     drivetrain_defomablehinge.write_in_file(output_file);
 
     output_file<<"#initial lock"<<std::endl;
-    output_file << "driven :"<<HSS_LSS_bearing_lock.get_label()<<", " <<"string, \"Time <="" 0.0125\""<< ", " << std::endl;
+    output_file << "driven :"<<HSS_LSS_bearing_lock.get_label()<<", " <<"string, \"Time<=LSSHSSContTime\""<< ", " << std::endl;
     HSS_LSS_bearing_lock.write_in_file(output_file);
 
     output_file<<"#-----LSS-Hub joint ------"<<std::endl;
@@ -426,8 +426,5 @@ Nacelle::get_num_joints() const {
 const ReferenceFrame 
 Nacelle::get_top_reference(int i) const 
 {
-    Frame temp1(1,zero3,eye3x3,zero3,zero3);
-    Frame temp2(2,zero3,eye3x3,zero3,zero3);
-
-    return ReferenceFrame(1,temp1,temp2); 
+    return Pitch_Bottom[i-1].reference;
 };

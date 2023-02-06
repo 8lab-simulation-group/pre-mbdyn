@@ -32,6 +32,8 @@ class Blade {
     double InitConstraint = 0.0125;
     double BldFlexL;
 
+    ReferenceFrame pitch_plate;
+
     // Bladeを構成するノードとエレメントの変数。vectorで宣言し、後ほど要素数に応じて容量を確保する。
     std::vector<ReferenceFrame> references;
     std::vector<Node>   nodes;
@@ -59,7 +61,9 @@ class Blade {
     public:
     void write_reference_in(std::ofstream &output_file) const;
     void write_nodes_in(std::ofstream &ofs) const;
-    void write_elements_in(std::ofstream &ofs) const;
+
+    void write_rigidbodies_in(std::ofstream &ofs) const;
+    void write_joints_in(std::ofstream &ofs) const;
 
     //const ReferenceFrame get_top_reference() const {return tower_top_reference;};
     int get_num_nodes() const;
