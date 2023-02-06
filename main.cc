@@ -9,8 +9,8 @@ void output(Platform &ptfm, Tower &Tower, Nacelle &nacelle, Blade &Blade1, Blade
 
 int main(int argc, char *argv[]){
 
-    //std::string input_file = std::string(argv[1]);
-    std::string input_file = "pre-MBDyn.ipt";
+    std::string input_file = std::string(argv[1]);
+
     // object of Class InputData
     InputData inputdata(input_file);
 
