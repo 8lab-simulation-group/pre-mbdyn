@@ -413,6 +413,12 @@ Platform::set_deformablejoint() {
 
 void
 Platform::set_total_joint() {
+
+    int node1 = 1;
+    int node2 = nodes[2].get_label();
+
+    ptfm_lock = TotalJoint(100, node1, node2, ReferenceFrame(100,ptfm_reference,offset_null), "Total", 0);
+
     for(int i=0; i<num_total_joints; i++) {
         //連続するnodeをtotal jointで拘束、解析初期時間が終わると拘束を開放する。
 
@@ -444,9 +450,10 @@ Platform::write_reference_in(std::ofstream &output_file) const {
     for(const ReferenceFrame &flm : references) {
         flm.write_reference(output_file);
     }
-
+    /*
     output_file<<"#-----Platform Top Reference------"<<std::endl;
     ptfm_top_reference.write_reference(output_file);
+    */
 }
 
 void
@@ -459,8 +466,8 @@ Platform::write_nodes_in(std::ofstream &output_file) const {
         nod.write_node(output_file);
     }
 
-    output_file << "#----Platform top node----" << std::endl;
-    ptfm_top_node.write_node(output_file);
+    //output_file << "#----Platform top node----" << std::endl;
+    //ptfm_top_node.write_node(output_file);
 }
 
 void
@@ -487,6 +494,42 @@ Platform::write_elements_in(std::ofstream &output_file) const {
     ptfm_top_joint.write_in_file(output_file);
 }
 
+void
+Platform::write_rigidbodies_in(std::ofstream &output_file) const {
+    output_file << "#----Platfrom Rigid Bodies-----" <<std::endl;
+    int i=1;
+    for(const RigidBody &rbd : rigidbodies){
+        output_file<<"# platform section "<<i<<std::endl;
+        rbd.write_in_file(output_file);
+        i++;
+    }
+}
+
+void
+Platform::write_joints_in(std::ofstream &output_file) const {
+    output_file << "#----Ground Clamp Joint -------" <<std::endl;
+    ground_joint.write_in_file(output_file);
+
+    output_file << "#----Platfrom defomable joint-----" <<std::endl;
+    for(const DeformableJoint &dfj : deformable_joints) {
+        dfj.write_in_file(output_file);
+    }
+    output_file << "#----Platfrom initial total joint-----" <<std::endl;
+    output_file << "driven :"<<ptfm_lock.get_label()<<", " <<"string, \"Time <="" 0.0125\""<< ", " << std::endl;
+    ptfm_lock.write_in_file(output_file);
+
+    for(const TotalJoint &ttj : total_joints ) {
+        output_file << "driven :"<<ttj.get_label()<<", " <<"string, \"Time <="" 0.0125\""<< ", " << std::endl;
+        ttj.write_in_file(output_file);
+    }
+
+    /*
+    output_file << "#----Platform top initial total joint----" <<std::endl;
+    output_file << "driven :"<<platform_label + 500 + 1<<", "<<"string, \"Time<=""0.0125\""<< ", " << std::endl;
+    ptfm_top_joint.write_in_file(output_file);
+    */
+}
+
 int
 Platform::get_num_nodes() const {
     // platform nodes + ground
@@ -500,6 +543,6 @@ Platform::get_num_rigid_bodies() const {
 
 int
 Platform::get_num_joints() const {
-    // platform joints + ground
-    return num_total_joints + num_deformable_joints + 1;
+    // platform joints + ground + ptfm lock
+    return num_total_joints + num_deformable_joints + 1 +1;
 }

@@ -86,4 +86,3 @@ void
 ReferenceFrame::print_reference_global() {
     Frame::print_reference();
 }
-

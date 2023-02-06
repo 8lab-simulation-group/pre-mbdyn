@@ -31,11 +31,10 @@ class Tower {
     double DHNodes;
     double InitConstraint = 0.0125;
 
-    Frame Tower_reference;
-    ReferenceFrame tower_top_reference;
-    ReferenceFrame tower_top_ref;
-    Node tower_top_node;
+    Node tower_base_node;
     TotalJoint tower_top_joint;
+
+    TotalJoint ptfmtop_to_twrbase;
 
     // Towerを構成するノードとエレメントの変数。vectorで宣言し、後ほど要素数に応じて容量を確保する。
     std::vector<ReferenceFrame> references;
@@ -44,6 +43,11 @@ class Tower {
     std::vector<DeformableJoint> deformable_joints;
     //解析初期のみ、deformable jointを全てTotal jointで拘束して解析初期の安定性を確保している。
     std::vector<TotalJoint> total_joints;
+
+    Frame Tower_reference;
+    ReferenceFrame tower_top_reference;
+    ReferenceFrame tower_top_ref;
+    Node tower_top_node;
 
     public:
     // コンストラクタ：初期化の時点で、ラベルとinputDataのポインタを要求する
@@ -55,8 +59,11 @@ class Tower {
     void write_reference_in(std::ofstream &output_file) const;
     void write_nodes_in(std::ofstream &ofs) const;
     void write_elements_in(std::ofstream &ofs) const;
+    void write_rigidbodies_in(std::ofstream &ofs) const;
+    void write_joints_in(std::ofstream &ofs) const;
 
     const ReferenceFrame get_top_reference() const {return tower_top_reference;};
+    const Node get_top_node() const {return tower_top_node;};
     int get_num_nodes() const;
     int get_num_rigid_bodies() const;
     int get_num_joints() const;

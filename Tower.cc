@@ -10,7 +10,7 @@ Tower::Tower(int label, const ReferenceFrame &towerbase, InputData *ID)
     num_rigidbodies = num_reference;
     //platform_top_referenceと接続のため
     num_deformable_joints = num_reference + 1;
-    num_total_joints = num_reference -1 ;
+    num_total_joints = num_deformable_joints ;
     TwrHt = inputdata ->get_value("TowerHt");
     TwrDft = inputdata ->get_value("TwrDraft");
     TwrRBHt = inputdata ->get_value("TwrRBHt");
@@ -23,6 +23,11 @@ Tower::Tower(int label, const ReferenceFrame &towerbase, InputData *ID)
     rigidbodies.resize(num_rigidbodies);
     deformable_joints.resize(num_deformable_joints);
     total_joints.resize(num_total_joints);
+
+    Vec3d e1(0.,0.,1.);
+    Vec3d e3(1.,0.,0.);
+
+    tower_base_node = Node(tower_base_reference.get_label(), tower_base_reference, Frame(0.,zero3,e1,e3,zero3,zero3),1);
 
     // tower top　のReferanceFrameを作る、この座標系はClass RNAに渡す
     double tower_top_height = TwrFlexL; 
@@ -603,9 +608,9 @@ Tower::set_deformablejoint() {
 
         // set Kmatrix and Cmatrix
         if(i==0) {
-          curr_node1 = 1500;
+          curr_node1 = tower_base_node.get_label();
           curr_node2 = nodes[i].get_label();
-          base_frame = nodes[i].get_frame();  // 修正したから確認必要
+          base_frame = tower_base_reference;
           double TmpLength = 0.5 * DHNodes;
           double TmpLength2 = TmpLength * TmpLength;
           double TmpLength3 = TmpLength2 * TmpLength;
@@ -689,11 +694,17 @@ Tower::set_deformablejoint() {
         ReferenceFrame joint_position(joint_label, base_frame, offset);
 
         deformable_joints[i] = DeformableJoint(joint_label, curr_node1, curr_node2, joint_position, kMatrix,Cmatrix, 0);
+        total_joints[i] = TotalJoint(joint_label+100, curr_node1, curr_node2, joint_position,"Total",0);
     }
 }
 
 void
 Tower::set_total_joint() {
+
+    int twrtop_to_ptfm_label = tower_base_reference.get_label() + 100;
+    
+    ptfmtop_to_twrbase = TotalJoint(twrtop_to_ptfm_label, 1001, tower_base_node.get_label(), tower_base_reference, "Total",0);
+    /*
     for(int i=0; i<num_total_joints; i++) {
         //連続するnodeをtotal jointで拘束、解析初期時間が終わると拘束を開放する。
 
@@ -710,22 +721,31 @@ Tower::set_total_joint() {
         ReferenceFrame joint_position = ReferenceFrame(joint_label, base_frame, offset);
         total_joints[i] = TotalJoint(joint_label, curr_node1, curr_node2, joint_position, "Total", 0);
     }
+    */
 }
 
 void
 Tower::write_reference_in(std::ofstream &output_file) const {
-    output_file<<"#-----Tower Top Reference------"<<std::endl;
-    tower_top_reference.write_reference(output_file);
+    output_file<<"#-----Tower Base Reference------"<<std::endl;
+    tower_base_reference.write_reference(output_file);
 
     output_file<<"#----Tower node reference----"<<std::endl;
 
+    int i = 1;
     for(const ReferenceFrame &flm : references) {
+        output_file<<"# Tower section "<<i<<std::endl;
         flm.write_reference(output_file);
+        i++;
     }
+    output_file<<"#-----Tower Top Reference------"<<std::endl;
+    tower_top_reference.write_reference(output_file);
 }
 
 void
 Tower::write_nodes_in(std::ofstream &output_file) const {
+    output_file << "#----Tower base node----" << std::endl;
+    tower_base_node.write_node(output_file);
+
     output_file << "#----Tower node-----" << std::endl;
     for(const Node &nod : nodes) {
         nod.write_node(output_file);
@@ -757,10 +777,38 @@ Tower::write_elements_in(std::ofstream &output_file) const {
     tower_top_joint.write_in_file(output_file);
 }
 
+void
+Tower::write_rigidbodies_in(std::ofstream &output_file) const {
+
+    output_file << "#----Tower Rigid Bodies-----" <<std::endl;
+    int i=1;
+    for(const RigidBody &rbd : rigidbodies){
+        output_file<<"# Tower Seciton "<<i<<std::endl;
+        rbd.write_in_file(output_file);
+        i++;
+    }
+}
+
+void
+Tower::write_joints_in(std::ofstream &output_file) const {
+    output_file << "#----platform top to tower base joint-----" <<std::endl;
+    ptfmtop_to_twrbase.write_in_file(output_file);
+
+    output_file << "#----Tower defomable joint-----" <<std::endl;
+    for(const DeformableJoint &dfj : deformable_joints) {
+        dfj.write_in_file(output_file);
+    }
+    output_file << "#----Tower initial total joint-----" <<std::endl;
+    for(const TotalJoint &ttj : total_joints ) {
+        output_file << "driven :"<<ttj.get_label()<<", " <<"string, \"Time <= 0.0125\""  <<", " << std::endl;
+        ttj.write_in_file(output_file);
+    }
+}
+
 int 
 Tower::get_num_nodes() const {
-    // tower nodes 
-    return num_nodes ;
+    // tower nodes + tower base + tower top
+    return num_nodes + 2 ;
 }
 
 int 
@@ -770,6 +818,6 @@ Tower::get_num_rigid_bodies() const {
 
 int
 Tower::get_num_joints() const {
-    // tower joints 
-    return num_total_joints + num_deformable_joints ;
+    // tower joints + towertop_to_paltform;
+    return num_total_joints + num_deformable_joints + 1;
 }
