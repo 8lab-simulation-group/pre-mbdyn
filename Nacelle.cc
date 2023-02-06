@@ -174,6 +174,15 @@ Nacelle::set_nodes(){
         Pitch_Bottom[i].node = Node(Pitch_Bottom[i].label, Pitch_Bottom[i].reference, offset_null, 0);
     }
 
+    Vec3d e1(0.,0.,1.);
+    Vec3d e3(1.,0.,0.);
+    ShaftCS = DummyNode(nacelle_label +10, nacelle_node, HSS_reference, 0);
+    ReferenceFrame nhr(0.,HSS_reference, Frame(0,zero3, e1, e3,zero3, zero3));
+    NacelleHubRef = DummyNode(nacelle_label + 20, nacelle_node, nhr,0);
+    ReferenceFrame rotazim(0., LSS_reference, Frame(0,zero3, e1, e3,zero3, zero3));
+    ReferenceFrame genazim(0., HSS_reference, Frame(0,zero3, e1, e3,zero3, zero3));
+    RotAzim = DummyNode(LSS_label + 10, LSS_node, rotazim, 0 );
+    GenAzim = DummyNode(HSS_label + 10, HSS_node, genazim, 0 );
 }
 void
 Nacelle::set_rigidbodies() {
@@ -335,8 +344,19 @@ Nacelle::write_nodes_in(std::ofstream &output_file) const {
         output_file<<"#-----PitchPlate "<<i+1<< " node------"<<std::endl;
         Pitch_Bottom[i].node.write_node(output_file);
     }
-    
-}
+    output_file<<"#-----Nacelle Dummy Node----------"<<std::endl;
+    output_file<<"# ShaftSC"<<std::endl;
+    ShaftCS.write_node(output_file);
+
+    output_file<<"# NacelleHubRef"<<std::endl;
+    NacelleHubRef.write_node(output_file);
+
+    output_file<<"# RotoAzim"<<std::endl;
+    RotAzim.write_node(output_file);
+
+    output_file<<"# GenAzim" <<std::endl;
+    GenAzim.write_node(output_file);
+}   
 
 void
 Nacelle::write_rigidbodies_in(std::ofstream &output_file) const {
@@ -408,8 +428,8 @@ Nacelle::write_joints_in(std::ofstream &output_file) const {
 
 int 
 Nacelle::get_num_nodes() const {
-    // nacelle nodes 
-    return num_nodes ;
+    // nacelle nodes + dummynode
+    return num_nodes + 4 ;
 }
 
 int 

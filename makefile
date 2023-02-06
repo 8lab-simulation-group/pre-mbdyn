@@ -9,6 +9,7 @@ SRCS     = Vec3d.cc
 SRCS    += Frame.cc
 SRCS    += ReferenceFrame.cc
 SRCS    += Node.cc
+SRCS    += DummyNode.cc
 SRCS    += Element.cc
 SRCS    += RigidBody.cc
 SRCS    += Joint.cc
@@ -19,7 +20,7 @@ SRCS    += Blade.cc
 SRCS    += main.cc
 SRCS    += InputData.cc
 # (5)オブジェクトファイル名
-OBJS    = $(SRCS:.cpp=.o)
+OBJS    = $(SRCS:.cc=.o)
  
 # (6)インクルードファイルのあるディレクトリパス
 INCDIR  = -I../inc
@@ -46,4 +47,4 @@ clean:
 
 install:
 	mkdir -p $(DESTDIR)/usr/bin
-	install -m 0755 pre-mbdyn $(DESTDIR)/usr/bin/pre-mbdyn
+	install -m 0755 pre-mbdyn $(DESTDIR)/usr/bin

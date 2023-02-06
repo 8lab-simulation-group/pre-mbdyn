@@ -15,6 +15,7 @@ Blade::Blade(int own_num,int label, const ReferenceFrame &Bladebase, InputData *
     num_deformable_joints = num_nodes -1;
     num_total_joints = num_nodes -1;
 
+    CM_references.resize(num+2);
 
     //vector変数を初期化
     references.resize(num_reference);
@@ -240,6 +241,11 @@ Blade::Blade(int own_num,int label, const ReferenceFrame &Bladebase, InputData *
       InterpEdgcgOf[i] = (EdgcgOf2-EdgcgOf1) * (XVal-XAray1)/(XAray2-XAray1) + EdgcgOf1;  
 
     }
+    std::cout<<""<<inputdata->get_value("AdjBlMs")<<std::endl;
+
+    for (const auto &i : InterpBMass){
+      std::cout<<""<<i<<std::endl;
+    }
 
     set_reference();
     set_nodes();
@@ -296,7 +302,7 @@ Blade::set_reference() {
         Vec3d position_offset_CM = Vec3d(0.,CMflap,CMedge); 
         Frame offset4(i,position_offset_CM, e_1, e_3, velocity_offset, angular_velocity_offset);
         references[3*i+17] = ReferenceFrame(blade_label+i+200, references[i],offset4);
-
+        CM_references[i] = references[3*i+17];
         //EA_M
         double EAflap = 0.0;
         double EAedge = 0.0;
@@ -389,11 +395,15 @@ Blade::set_rigidbodies() {
         double inerSS;
         double inerYaw;
 
+        Vec3d cm;
+
         if(i==0) {
           mass = inputdata->get_value("SmllNmBr");
           inerFA = inputdata->get_value("SmllNmBr");
           inerSS = inputdata->get_value("SmllNmBr");
-          inerYaw = inputdata->get_value("SmllNmBr");          
+          inerYaw = inputdata->get_value("SmllNmBr");     
+
+          cm = zero3;
     
         }else if(i>0 && i<18) {
           curr_length = inputdata->get_value("DRNodes",i);
@@ -402,15 +412,19 @@ Blade::set_rigidbodies() {
           inerFA = InterpFlpIner[i-1] * curr_length + ThnBarI;
           inerSS = InterpdgIner[i-1] * curr_length + ThnBarI;
           inerYaw = (InterpFlpIner[i-1] + InterpdgIner[i-1]) * curr_length;     
+
+          cm = CM_references[i].get_relative_frame().get_position();
+
         }else if(i<num_rigidbodies) {
           mass = inputdata->get_value("SmllNmBr");
           inerFA = inputdata->get_value("SmllNmBr");
           inerSS = inputdata->get_value("SmllNmBr");
           inerYaw = inputdata->get_value("SmllNmBr");           
+
+          cm = zero3;
         }
 
         // 重心位置のnodeからの相対位置を設定、Bladeはnodeの位置と重心位置は等しい
-        Vec3d cm = zero3;
         // 慣性モーメントを取得
         Vec3d inertia_moment(inerYaw, inerSS, inerFA); 
 

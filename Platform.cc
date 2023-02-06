@@ -17,6 +17,7 @@ Platform::Platform(int label, InputData *ID)
     rigidbodies.resize(num_rigidbodies);
     deformable_joints.resize(num_deformable_joints);
     total_joints.resize(num_total_joints);
+    dummy.resize(2);
 
     // surge等の初期値を取得
     init_displacement = Vec3d(inputdata->get_value("PtfmSurge"), inputdata->get_value("PtfmSway"), inputdata->get_value("PtfmHeave"));
@@ -87,6 +88,15 @@ Platform::set_nodes(){
         // node classのvector配列のメンバ変数に保存
         nodes[i] = Node(curr_node_label, references[i], offset_null, 1);
     }
+    //dummynode for output
+    Vec3d position(-1.250,0.,0.);
+    Vec3d e1(0.,0.,1.);
+    Vec3d e3(1.,0.,0.);
+
+    dummy[0] = DummyNode(100, nodes[2], Frame(0.,position, e1, e3, zero3, zero3), 1);
+
+
+    dummy[1] = DummyNode(150, nodes[20], nodes[20].get_reference(), 1);
 }
 
 void
@@ -466,8 +476,10 @@ Platform::write_nodes_in(std::ofstream &output_file) const {
         nod.write_node(output_file);
     }
 
-    //output_file << "#----Platform top node----" << std::endl;
-    //ptfm_top_node.write_node(output_file);
+    output_file << "#----Platform dummy node ----" << std::endl;
+    for(const DummyNode &dm : dummy) {
+      dm.write_node(output_file);
+    }
 }
 
 
@@ -509,8 +521,8 @@ Platform::write_joints_in(std::ofstream &output_file) const {
 
 int
 Platform::get_num_nodes() const {
-    // platform nodes + ground
-    return num_nodes + 1 ;
+    // platform nodes + ground + dummynode(2)
+    return num_nodes + 1 +2;
 }
 
 int

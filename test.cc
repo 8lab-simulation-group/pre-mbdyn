@@ -1,6 +1,7 @@
-#include "Vec3d.h"
-#include "Frame.h"
-#include "ReferenceFrame.h"
+#include "InputData.h"
+#include "Node.h"
+#include "RigidBody.h"
+#include "Joint.h"
 
 int main(){
 
@@ -22,10 +23,17 @@ int main(){
 
     ReferenceFrame reffrm(2,base, Frame(1.,zero3,e1,e3,zero3,zero3));
 
-    ground.print_reference();
-    base.print_reference();
-    reffrm.print_reference();
+    Node node(1, reffrm, 1);
 
+    node.print_node();
+
+    Frame dummy_offset(0.,Vec3d(1.,2.,3), Vec3d(0.,1.,0.), Vec3d(1.,0.,0.),zero3,zero3);
+    
+    DummyNode dummy1(2, node, dummy_offset,1);
+    DummyNode dummy2(3, node, offset_null,1);
+
+    dummy1.print_node();
+    dummy2.print_node();
     return 0;
 
 // 検証手順

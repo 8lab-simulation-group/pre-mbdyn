@@ -51,9 +51,11 @@ class Platform {
     TotalJoint ptfm_top_joint;
     TotalJoint ptfm_lock;
 
+    
     // プラットフォームを構成するノードとエレメントの変数。vectorで宣言し、後ほど要素数に応じて容量を確保する。
     std::vector<ReferenceFrame> references;
     std::vector<Node>   nodes;
+    std::vector<DummyNode> dummy;
     std::vector<RigidBody>  rigidbodies;
     std::vector<DeformableJoint> deformable_joints;
     //解析初期のみ、deformable jointを全てTotal jointで拘束して解析初期の安定性を確保している。

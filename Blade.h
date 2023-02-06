@@ -36,6 +36,7 @@ class Blade {
 
     // Bladeを構成するノードとエレメントの変数。vectorで宣言し、後ほど要素数に応じて容量を確保する。
     std::vector<ReferenceFrame> references;
+    std::vector<ReferenceFrame> CM_references;
     std::vector<Node>   nodes;
     std::vector<RigidBody>  rigidbodies;
     std::vector<DeformableJoint> deformable_joints;

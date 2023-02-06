@@ -30,9 +30,6 @@ int main(int argc, char *argv[]){
     Blade Blade2(2, blade_label*2, Nacelle.get_top_reference(2), &inputdata);
     Blade Blade3(3, blade_label*3, Nacelle.get_top_reference(3), &inputdata);
 
-     std::cout<<Nacelle.get_top_reference(1).get_label()<<std::endl;
-     std::cout<<Nacelle.get_top_reference(2).get_label()<<std::endl;
-     std::cout<<Nacelle.get_top_reference(3).get_label()<<std::endl;
     output(platform , Tower, Nacelle, Blade1,Blade2, Blade3);
 
     return 0;

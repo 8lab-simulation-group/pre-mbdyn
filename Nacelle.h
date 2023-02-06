@@ -80,6 +80,11 @@ class  Nacelle {
     double         Hub_mass;
     Vec3d          Hub_inertia;
 
+    DummyNode      ShaftCS;
+    DummyNode      NacelleHubRef;
+    DummyNode      RotAzim;
+    DummyNode      GenAzim;
+
     // Pitch Plate
     struct PitchPlate {
         ReferenceFrame inline_shaft_reference;
