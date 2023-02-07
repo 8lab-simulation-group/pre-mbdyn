@@ -239,7 +239,7 @@ Nacelle::set_joints() {
     // LSS-Hub joint
     node1 = LSS_node;
     node2 = Hub_node;
-    LSS_Hub_total = TotalJoint(LSS_Hub_label, node1, node2, LSS_Hub_reference, "Total",0);    
+    LSS_Hub_total = TotalJoint(LSS_Hub_label, node1, node2, LSS_Hub_reference, "Total",1);    
 
     // pitch bottom joint
     for(int i=0; i<num_blds;i++) {
