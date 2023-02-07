@@ -33,8 +33,8 @@ Nacelle::Nacelle(int label, const Node &tower_top, InputData *ID)
     Generator_mass = small_number;
     Hub_mass = inputdata->get_value("HubMass");
 
-    dtrain_spring_constant = inputdata->get_value("DTTorSpr");
-    dtrain_dumping_constant = inputdata->get_value("DTTorDmp");
+    dtrain_spring_constant = inputdata->get_value("DTTorSpr")*1000; // convert kN/rad -> N/rad
+    dtrain_dumping_constant = inputdata->get_value("DTTorDmp")*1000;
     init_rot_speed = inputdata->get_value("RotSpeed")*2*M_PI/60;
 
 
@@ -239,7 +239,7 @@ Nacelle::set_joints() {
     // LSS-Hub joint
     node1 = LSS_node;
     node2 = Hub_node;
-    LSS_Hub_total = TotalJoint(LSS_Hub_label, node1, node2, LSS_Hub_reference, "Total",0);    
+    LSS_Hub_total = TotalJoint(LSS_Hub_label, node1, node2, LSS_Hub_reference, "Total",1);    
 
     // pitch bottom joint
     for(int i=0; i<num_blds;i++) {

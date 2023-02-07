@@ -241,11 +241,6 @@ Blade::Blade(int own_num,int label, const ReferenceFrame &Bladebase, InputData *
       InterpEdgcgOf[i] = (EdgcgOf2-EdgcgOf1) * (XVal-XAray1)/(XAray2-XAray1) + EdgcgOf1;  
 
     }
-    std::cout<<""<<inputdata->get_value("AdjBlMs")<<std::endl;
-
-    for (const auto &i : InterpBMass){
-      std::cout<<""<<i<<std::endl;
-    }
 
     set_reference();
     set_nodes();
@@ -282,7 +277,7 @@ Blade::set_reference() {
         //　元の座標系(pitch plate)に対して、３軸周りにthetaだけ回転する
         //  そして、1軸と3軸を入れ替える
 
-        Vec3d e3(std::cos(theta),std::sin(theta),0.);
+        Vec3d e3(-std::sin(theta),-std::cos(theta),0.);
         Vec3d e1(0.,0.,1.);
         Frame offset(blade_label+i,positon_offset, e1,e3,velocity_offset, angular_velocity_offset);
         ReferenceFrame Bld_sec_frame(blade_label+i, bld_base_reference1,offset);
