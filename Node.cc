@@ -42,12 +42,12 @@ Node::write_node(std::ofstream &ofs) const {
     ofs << std::scientific<<std::setprecision(5)
         << "structural :" << node_label << "," << std::endl
         << "    dynamic," << std::endl
-        << "    reference, " << reference_label << ", " << offset_position <<std::endl
-        << "    refefence, " << reference_label << ", " << std::endl
+        << "    reference, " << reference_label << ", " << offset_position << ", " << std::endl
+        << "    reference, " << reference_label << ", " << std::endl
         << "            1, " << offset_e1 << ", "<<std::endl
         << "            3, " << offset_e3 << ", "<<std::endl
-        << "    reference, " << reference_label << ", " << offset_velocity << std::endl
-        << "    reference, " << reference_label << ", " << offset_angular_velocity << std::endl
+        << "    reference, " << reference_label << ", " << offset_velocity << ", " << std::endl
+        << "    reference, " << reference_label << ", " << offset_angular_velocity << ", " << std::endl
         << "    output, " << output_flg << ";"<<std::endl<<std::endl;
 }
     
@@ -63,12 +63,12 @@ Node::print_node() {
     std::cout << std::scientific<<std::setprecision(5)
         << "structural :" << node_label << "," << std::endl
         << "    dynamic," << std::endl
-        << "    reference, " << reference_label << ", " << offset_position <<std::endl
+        << "    reference, " << reference_label << ", " << offset_position << ", " << std::endl
         << "    refefence, " << reference_label << ", " << std::endl
         << "            1, " << offset_e1 << ", "<<std::endl
         << "            3, " << offset_e3 << ", "<<std::endl
-        << "    reference, " << reference_label << ", " << offset_velocity << std::endl
-        << "    reference, " << reference_label << ", " << offset_angular_velocity << std::endl
+        << "    reference, " << reference_label << ", " << offset_velocity << ", " << std::endl
+        << "    reference, " << reference_label << ", " << offset_angular_velocity << ", " << std::endl
         << "    output, " << output_flg << ";"<<std::endl<<std::endl;
 }
 
@@ -93,7 +93,7 @@ StaticNode::write_node(std::ofstream &ofs) const {
         << "structural :" << node_label << "," << std::endl
         << "    static," << std::endl
         << "    reference, " << reference_label << ", null," <<std::endl
-        << "    refefence, " << reference_label << ", eye, " << std::endl
+        << "    reference, " << reference_label << ", eye, " << std::endl
         << "    reference, " << reference_label << ", null," << std::endl
         << "    reference, " << reference_label << ", null," << std::endl
         << "    output, " << output_flag << ";"<<std::endl<<std::endl;

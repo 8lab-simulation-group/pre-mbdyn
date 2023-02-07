@@ -20,7 +20,7 @@ class Node : public ReferenceFrame{
     Node &operator = (const Node &node);
     
     void write_node(std::ofstream &ofs) const ;
-    const ReferenceFrame &get_reference() const {return *this;};
+    ReferenceFrame &get_reference() {return *this;};
     void print_node();
     int get_label() const {return node_label;};
 
@@ -44,6 +44,26 @@ class StaticNode {
     int get_label() const {return node_label;};
 };
 
+class DummyNode  {
+    public:
+    int dummynode_label;
+    Node  node;
+    int reference_label;
+    Frame offset;
+    int outflag;
+
+    DummyNode(){};
+    DummyNode(int label, const Node &node, const Frame &offset, int outflag);
+    DummyNode(int label, const Node &node, const ReferenceFrame &reference, int outflag);
+    DummyNode(const DummyNode &dnode);
+    ~DummyNode(){};
+
+    DummyNode &operator = (const DummyNode &node);
+    
+    void write_node(std::ofstream &ofs) const ;
+    void print_node()const ;
+    int get_label() const {return dummynode_label;};    
+};
 
 
 

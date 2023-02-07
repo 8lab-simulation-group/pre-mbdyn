@@ -1,6 +1,8 @@
 #include "Platform.h"
+#include <cmath>
+#include <math.h>
 
-Platform::Platform(int label, InputData *ID) 
+Platform::Platform(int label, InputData *ID)
 : platform_label(label), inputdata(ID) // const メンバ変数を引数で初期化
 {
     num_reference = inputdata->get_value("NPtfmDivH");
@@ -15,6 +17,7 @@ Platform::Platform(int label, InputData *ID)
     rigidbodies.resize(num_rigidbodies);
     deformable_joints.resize(num_deformable_joints);
     total_joints.resize(num_total_joints);
+    dummy.resize(2);
 
     // surge等の初期値を取得
     init_displacement = Vec3d(inputdata->get_value("PtfmSurge"), inputdata->get_value("PtfmSway"), inputdata->get_value("PtfmHeave"));
@@ -35,7 +38,10 @@ Platform::Platform(int label, InputData *ID)
     double ptfm_top_height = -1*inputdata->get_value("TwrDraft"); //mslからのdraftで入力しているので、座標系を換算しておく
     Vec3d ptfm_top(0.,0.,ptfm_top_height);
     Frame offset(platform_label + 500, ptfm_top, eye3x3, zero3, zero3);
+    ptfm_top_node = Node(platform_label + 500, ptfm_reference, offset,1);
     ptfm_top_reference = ReferenceFrame(platform_label + 500, ptfm_reference, offset);
+    ptfm_top_ref = ReferenceFrame(platform_label + 500, ptfm_reference, offset_null);
+    ptfm_top_joint = TotalJoint(platform_label + 500 +1 , platform_label + 500 , 2001, ptfm_top_ref, "Total", 0);
 
     set_reference();
     set_nodes();
@@ -70,6 +76,7 @@ Platform::set_reference() {
     //上記の分でnodeの定義に使うrefereceが出力される。仮に追加で必要になったら、以下の方法で追加できる。
     // reference.push_back( ReferenceFrame(********) )
 }
+
 void
 Platform::set_nodes(){
     for(int i=0; i<num_nodes; i++) {
@@ -81,7 +88,17 @@ Platform::set_nodes(){
         // node classのvector配列のメンバ変数に保存
         nodes[i] = Node(curr_node_label, references[i], offset_null, 1);
     }
+    //dummynode for output
+    Vec3d position(-1.250,0.,0.);
+    Vec3d e1(0.,0.,1.);
+    Vec3d e3(1.,0.,0.);
+
+    dummy[0] = DummyNode(100, nodes[2], Frame(0.,position, e1, e3, zero3, zero3), 1);
+
+
+    dummy[1] = DummyNode(150, nodes[20], nodes[20].get_reference(), 1);
 }
+
 void
 Platform::set_rigidbodies() {
     for(int i=0; i<num_rigidbodies; i++) {
@@ -105,17 +122,249 @@ Platform::set_rigidbodies() {
         //最後の引数はMBDynの出力制御用、現在rigidbodyの出力は特に見ていない
         rigidbodies[i] = RigidBody(curr_body_label, curr_node_label, mass, cm, inertia_moment, 0);
     }
-
 }
 
 void
 Platform::set_deformablejoint() {
-    for(int i=0; i<num_deformable_joints; i++) {
+    //CMatrixの係数の計算に使用する変数
+
+    // TwrTpMass
+    double RotMass = inputdata ->get_value("HubMass");
+    double NacMass = inputdata ->get_value("NacMass");
+    double YawBrMass = inputdata ->get_value("YawBrMass");
+    double RFrlMass = inputdata ->get_value("RFrlMass");
+    double BoomMass = inputdata ->get_value("BoomMass");
+    double TFinMass = inputdata ->get_value("TFinMass");
+    double TwrTpMass = RotMass + NacMass + YawBrMass + RFrlMass + BoomMass + TFinMass;
+    
+    double TwrHt = inputdata ->get_value("TowerHt");
+    double TwrDft = inputdata ->get_value("TwrDraft");
+    double TwrRBHt = inputdata ->get_value("TwrRBHt");
+    double TwrFlexL = TwrHt + TwrDft - TwrRBHt;
+    double TwrNodes = inputdata ->get_value("TwrNodes");
+    double DHNodes = TwrFlexL/TwrNodes;
+    double num_reference_Tower = inputdata ->get_value("NTwInpSt");
+    double FAStTunr = inputdata ->get_value("FAStTunr1");
+    double SSStTunr = inputdata ->get_value("SSStTunr1");
+    int PolyOrd = 6;
+
+    // Interpolution TwFAStif & TwSSStif    KTFA KTSS
+    
+    double KTFA1 = 0.0;
+    double KTSS1 = 0.0;
+
+    for(int j=0; j<TwrNodes; j++) {
+
+      double TwrFASF1 = 0.0;
+      double TwrSSSF1 = 0.0;
+
+      for(int i=2; i<PolyOrd+1; i++) {
  
+        int Swtch0 = 0;
+        int Swtch1 = 0;
+        int Swtch2 = 1;
+        double Deriv = 2.0;
+        double CoefTmp = Swtch0 + Swtch1 * i + Swtch2 * i * (i-1);
+
+        if(i==2) {
+          TwrFASF1 = inputdata ->get_value("TwFAM1Sh",2) * CoefTmp/pow(TwrFlexL,Deriv);
+          TwrSSSF1 = inputdata ->get_value("TwSSM1Sh",2) * CoefTmp/pow(TwrFlexL,Deriv);
+        } else {
+          TwrFASF1 = TwrFASF1 + inputdata ->get_value("TwFAM1Sh",i) * CoefTmp * pow((0.5 * DHNodes * (2 * (j+1)-1))/TwrFlexL,i-Deriv)/pow(TwrFlexL,Deriv);
+          TwrSSSF1 = TwrSSSF1 + inputdata ->get_value("TwSSM1Sh",i) * CoefTmp * pow((0.5 * DHNodes * (2 * (j+1)-1))/TwrFlexL,i-Deriv)/pow(TwrFlexL,Deriv);
+        }
+      }
+
+      double XAray1;
+      double XAray2;
+      double YAray1;
+      double YAray2;
+      double ZAray1;
+      double ZAray2;
+      double XVal = 0.5 * DHNodes * (2 * (j+1)-1);
+      
+      if(j<2) {
+        XAray1 = inputdata ->get_value("HtFract", 1) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 2) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TwFAStif", 1);
+        YAray2 = inputdata ->get_value("TwFAStif", 2);
+        ZAray1 = inputdata ->get_value("TwSSStif", 1);
+        ZAray2 = inputdata ->get_value("TwSSStif", 2);
+      } else if(j>1 && j<4) {
+        XAray1 = inputdata ->get_value("HtFract", 2) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 3) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TwFAStif", 2);
+        YAray2 = inputdata ->get_value("TwFAStif", 3);
+        ZAray1 = inputdata ->get_value("TwSSStif", 2);
+        ZAray2 = inputdata ->get_value("TwSSStif", 3);
+      } else if(j>3 && j<6) {
+        XAray1 = inputdata ->get_value("HtFract", 3) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 4) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TwFAStif", 3);
+        YAray2 = inputdata ->get_value("TwFAStif", 4);
+        ZAray1 = inputdata ->get_value("TwSSStif", 3);
+        ZAray2 = inputdata ->get_value("TwSSStif", 4);
+      } else if(j>5 && j<8) {
+        XAray1 = inputdata ->get_value("HtFract", 4) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 5) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TwFAStif", 4);
+        YAray2 = inputdata ->get_value("TwFAStif", 5);
+        ZAray1 = inputdata ->get_value("TwSSStif", 4);
+        ZAray2 = inputdata ->get_value("TwSSStif", 5);
+      } else if(j>7 && j<10) {
+        XAray1 = inputdata ->get_value("HtFract", 5) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 6) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TwFAStif", 5);
+        YAray2 = inputdata ->get_value("TwFAStif", 6);
+        ZAray1 = inputdata ->get_value("TwSSStif", 5);
+        ZAray2 = inputdata ->get_value("TwSSStif", 6);
+      } else if(j>9 && j<12) {
+        XAray1 = inputdata ->get_value("HtFract", 6) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 7) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TwFAStif", 6);
+        YAray2 = inputdata ->get_value("TwFAStif",7);
+        ZAray1 = inputdata ->get_value("TwSSStif", 6);
+        ZAray2 = inputdata ->get_value("TwSSStif", 7);
+      } else if(j>11 && j<14) {
+        XAray1 = inputdata ->get_value("HtFract", 7) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 8) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TwFAStif", 7);
+        YAray2 = inputdata ->get_value("TwFAStif", 8);
+        ZAray1 = inputdata ->get_value("TwSSStif", 7);
+        ZAray2 = inputdata ->get_value("TwSSStif", 8);
+      } else if(j>13 && j<16) {
+        XAray1 = inputdata ->get_value("HtFract", 8) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 9) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TwFAStif", 8);
+        YAray2 = inputdata ->get_value("TwFAStif", 9);
+        ZAray1 = inputdata ->get_value("TwSSStif", 8);
+        ZAray2 = inputdata ->get_value("TwSSStif", 9);
+      } else if(j>15 && j<18) {
+        XAray1 = inputdata ->get_value("HtFract", 9) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 10) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TwFAStif", 9);
+        YAray2 = inputdata ->get_value("TwFAStif", 10);
+        ZAray1 = inputdata ->get_value("TwSSStif", 9);
+        ZAray2 = inputdata ->get_value("TwSSStif", 10);
+      } else {
+        XAray1 = inputdata ->get_value("HtFract", 10) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 11) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TwFAStif", 10);
+        YAray2 = inputdata ->get_value("TwFAStif", 11);
+        ZAray1 = inputdata ->get_value("TwSSStif", 10);
+        ZAray2 = inputdata ->get_value("TwSSStif", 11);
+      }
+  
+      double InterpTwFAStif = (YAray2-YAray1) * (XVal-XAray1)/(XAray2-XAray1) + YAray1;
+      double InterpTwSSStif = (ZAray2-ZAray1) * (XVal-XAray1)/(XAray2-XAray1) + ZAray1;
+      double ElstffFA = InterpTwFAStif * DHNodes;
+      double ElstffSS = InterpTwSSStif * DHNodes;
+      KTFA1 = KTFA1 + ElstffFA * TwrFASF1 * TwrFASF1;  
+      KTSS1 = KTSS1 + ElstffSS * TwrSSSF1 * TwrSSSF1;  
+    }
+
+    // Interpolution TMass & MTFA & MTSS
+
+    double MTFA = TwrTpMass;
+    double MTSS = TwrTpMass;
+
+    for(int j=0; j<TwrNodes; j++) {
+
+      double TwrFASF2 = 0.0;
+      double TwrSSSF2 = 0.0;
+      
+      for(int i=2; i<PolyOrd+1; i++) {
+
+        int Swtch0 = 1;
+        int Swtch1 = 0;
+        int Swtch2 = 0;
+        int Deriv = 0;
+
+        int CoefTmp = Swtch0 + Swtch1 * i + Swtch2 * i * (i-1);
+        TwrFASF2 = TwrFASF2 + inputdata ->get_value("TwFAM1Sh",i) * CoefTmp * pow((0.5 * DHNodes * (2* (j+1)-1))/TwrFlexL,i-Deriv)/pow(TwrFlexL,Deriv); 
+        TwrSSSF2 = TwrSSSF2 + inputdata ->get_value("TwSSM1Sh",i) * CoefTmp * pow((0.5 * DHNodes * (2* (j+1)-1))/TwrFlexL,i-Deriv)/pow(TwrFlexL,Deriv); 
+      }  
+      
+      double XAray1;
+      double XAray2;
+      double YAray1;
+      double YAray2;
+      double XVal = 0.5 * DHNodes * (2 * (j+1)-1);
+
+      if(j<2) {
+        XAray1 = inputdata ->get_value("HtFract", 1) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 2) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TMassDen", 1);
+        YAray2 = inputdata ->get_value("TMassDen", 2);
+        
+      } else if(j>1 && j<4) {
+        XAray1 = inputdata ->get_value("HtFract", 2) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 3) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TMassDen", 2);
+        YAray2 = inputdata ->get_value("TMassDen", 3);
+      } else if(j>3 && j<6) {
+        XAray1 = inputdata ->get_value("HtFract", 3) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 4) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TMassDen", 3);
+        YAray2 = inputdata ->get_value("TMassDen", 4);
+      } else if(j>5 && j<8) {
+        XAray1 = inputdata ->get_value("HtFract", 4) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 5) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TMassDen", 4);
+        YAray2 = inputdata ->get_value("TMassDen", 5);
+      } else if(j>7 && j<10) {
+        XAray1 = inputdata ->get_value("HtFract", 5) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 6) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TMassDen", 5);
+        YAray2 = inputdata ->get_value("TMassDen", 6);
+      } else if(j>9 && j<12) {
+        XAray1 = inputdata ->get_value("HtFract", 6) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 7) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TMassDen", 6);
+        YAray2 = inputdata ->get_value("TMassDen", 7);
+      } else if(j>11 && j<14) {
+        XAray1 = inputdata ->get_value("HtFract", 7) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 8) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TMassDen", 7);
+        YAray2 = inputdata ->get_value("TMassDen", 8);
+      } else if(j>13 && j<16) {
+        XAray1 = inputdata ->get_value("HtFract", 8) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 9) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TMassDen", 8);
+        YAray2 = inputdata ->get_value("TMassDen", 9);
+      } else if(j>15 && j<18) {
+        XAray1 = inputdata ->get_value("HtFract", 9) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 10) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TMassDen", 9);
+        YAray2 = inputdata ->get_value("TMassDen", 10);
+      } else {
+        XAray1 = inputdata ->get_value("HtFract", 10) * TwrFlexL;
+        XAray2 = inputdata ->get_value("HtFract", 11) * TwrFlexL;
+        YAray1 = inputdata ->get_value("TMassDen", 10);
+        YAray2 = inputdata ->get_value("TMassDen", 11);
+      }
+
+      double InterpTMass = (YAray2-YAray1) * (XVal-XAray1)/(XAray2-XAray1) + YAray1;
+      double ElmntMass = InterpTMass * DHNodes;
+      MTFA = MTFA + ElmntMass * TwrFASF2 * TwrFASF2;
+      MTSS = MTSS + ElmntMass * TwrSSSF2 * TwrSSSF2;
+    }
+
+    
+
+    double KTFA = KTFA1 * sqrt(FAStTunr * FAStTunr);
+    double FreqTFA = 0.5/M_PI * sqrt(KTFA/(MTFA-TwrTpMass));
+
+    double KTSS = KTSS1 * sqrt(SSStTunr * SSStTunr);
+    double FreqTSS = 0.5/M_PI * sqrt(KTSS/(MTSS-TwrTpMass));
+    
+    for(int i=0; i<num_deformable_joints; i++) {
+
         int curr_node1 = nodes[i].get_label();
         int curr_node2 = nodes[i+1].get_label();
 
         int joint_label = platform_label + i + 1;
+
         // jointの位置を指定する際の座標系、node1の座標系を使用
         Frame base_frame = nodes[i].get_frame();
         // その座標系からのoffset拘束点はnode1の場所とするので、offsetはなし
@@ -125,13 +374,48 @@ Platform::set_deformablejoint() {
 
         Mat6x6d kMatrix = zero6x6;
         Mat6x6d Cmatrix = zero6x6;
-        // set Kmatrix and Cmatrix
-        kMatrix.set(0,0) = 0;
-        kMatrix.set(0,1) = 0;
-        kMatrix.set(0,2) = 0;
-        kMatrix.set(0,3) = 0;
-        kMatrix.set(0,4) = 0;
 
+        // Tower　node間距離
+        double TmpLength = 0.5*(inputdata ->get_value("ELENGTH", i+1) + inputdata->get_value("ELENGTH", (i+2)));
+        double TmpLength2 = TmpLength*TmpLength;
+        double TmpLength3 = TmpLength2*TmpLength;
+        // 剛性
+        double StiffPEA1 = inputdata ->get_value("EAStif", i+1);
+        double StiffPEA2 = inputdata ->get_value("EAStif", i+2);
+        double StiffPSS1 = inputdata ->get_value("SSStif", i+1);
+        double StiffPSS2 = inputdata ->get_value("SSStif", i+2);
+        double StiffPFA1 = inputdata ->get_value("FAStif", i+1);
+        double StiffPFA2 = inputdata ->get_value("FAStif", i+2);
+        double StiffPGJ1 = inputdata ->get_value("GJStif", i+1);
+        double StiffPGJ2 = inputdata ->get_value("GJStif", i+2);
+
+        //ベータ減衰　CRatio = 減衰係数/(π*固有周波数)
+        double CRatioTFA = 0.01*(inputdata ->get_value("TwrFADmp1"))/(M_PI * FreqTFA);
+        double CRatioTSS = 0.01*(inputdata ->get_value("TwrSSDmp1"))/(M_PI * FreqTSS);
+        double CRatioTEA = 0.01*1.0;
+        double CRatioTGJ = 0.01*1.0;
+
+        // set Kmatrix and Cmatrix
+        kMatrix.set(0,0) =  0.5*(StiffPEA1+StiffPEA2)/TmpLength;
+        kMatrix.set(1,1) =  6.0*(StiffPSS1+StiffPSS2)/TmpLength3;
+        kMatrix.set(2,2) =  6.0*(StiffPFA1+StiffPFA2)/TmpLength3;
+        kMatrix.set(3,3) =  0.5*(StiffPGJ1+StiffPGJ2)/TmpLength;
+        kMatrix.set(4,4) =  (3.0*StiffPFA1+StiffPFA2)/TmpLength;
+        kMatrix.set(5,5) =  (3.0*StiffPSS1+StiffPSS2)/TmpLength;
+        kMatrix.set(1,5) = -2.0*(2.0*StiffPSS1+StiffPSS2)/TmpLength2;
+        kMatrix.set(2,4) =  2.0*(2.0*StiffPFA1+StiffPFA2)/TmpLength2;
+        kMatrix.set(5,1) = kMatrix.set(1,5);
+        kMatrix.set(4,2) = kMatrix.set(2,4);
+        Cmatrix.set(0,0) = kMatrix.set(0,0)*CRatioTEA;
+        Cmatrix.set(1,1) = kMatrix.set(1,1)*CRatioTSS;
+        Cmatrix.set(2,2) = kMatrix.set(2,2)*CRatioTFA;
+        Cmatrix.set(3,3) = kMatrix.set(3,3)*CRatioTGJ;
+        Cmatrix.set(4,4) = kMatrix.set(4,4)*CRatioTFA;
+        Cmatrix.set(5,5) = kMatrix.set(5,5)*CRatioTSS;
+        Cmatrix.set(1,5) = kMatrix.set(1,5)*CRatioTSS;
+        Cmatrix.set(2,4) = kMatrix.set(2,4)*CRatioTFA;
+        Cmatrix.set(5,1) = Cmatrix.set(1,5);
+        Cmatrix.set(1,5) = Cmatrix.set(1,5);
 
         deformable_joints[i] = DeformableJoint(joint_label, curr_node1, curr_node2, joint_position, kMatrix,Cmatrix, 0);
     }
@@ -139,6 +423,12 @@ Platform::set_deformablejoint() {
 
 void
 Platform::set_total_joint() {
+
+    int node1 = 1;
+    int node2 = nodes[2].get_label();
+
+    ptfm_lock = TotalJoint(100, node1, node2, ReferenceFrame(100,ptfm_reference,offset_null), "Total", 0);
+
     for(int i=0; i<num_total_joints; i++) {
         //連続するnodeをtotal jointで拘束、解析初期時間が終わると拘束を開放する。
 
@@ -165,14 +455,15 @@ Platform::write_reference_in(std::ofstream &output_file) const {
     output_file<<"#-----Platform Reference------"<<std::endl;
     ptfm_reference.write_reference(output_file);
 
-    output_file<<"#-----Platform Top Reference------"<<std::endl;
-    ptfm_top_reference.write_reference(output_file);
-
     output_file<<"#----Platform node reference----"<<std::endl;
 
     for(const ReferenceFrame &flm : references) {
         flm.write_reference(output_file);
     }
+    /*
+    output_file<<"#-----Platform Top Reference------"<<std::endl;
+    ptfm_top_reference.write_reference(output_file);
+    */
 }
 
 void
@@ -184,41 +475,63 @@ Platform::write_nodes_in(std::ofstream &output_file) const {
     for(const Node &nod : nodes) {
         nod.write_node(output_file);
     }
+
+    output_file << "#----Platform dummy node ----" << std::endl;
+    for(const DummyNode &dm : dummy) {
+      dm.write_node(output_file);
+    }
+}
+
+
+void
+Platform::write_rigidbodies_in(std::ofstream &output_file) const {
+    output_file << "#----Platfrom Rigid Bodies-----" <<std::endl;
+    int i=1;
+    for(const RigidBody &rbd : rigidbodies){
+        output_file<<"# platform section "<<i<<std::endl;
+        rbd.write_in_file(output_file);
+        i++;
+    }
 }
 
 void
-Platform::write_elements_in(std::ofstream &output_file) const {
+Platform::write_joints_in(std::ofstream &output_file) const {
     output_file << "#----Ground Clamp Joint -------" <<std::endl;
     ground_joint.write_in_file(output_file);
 
-    output_file << "#----Platfrom Rigid Bodies-----" <<std::endl;
-    for(const RigidBody &rbd : rigidbodies){
-        rbd.write_in_file(output_file);
-    }
     output_file << "#----Platfrom defomable joint-----" <<std::endl;
     for(const DeformableJoint &dfj : deformable_joints) {
         dfj.write_in_file(output_file);
     }
     output_file << "#----Platfrom initial total joint-----" <<std::endl;
+    output_file << "driven :"<<ptfm_lock.get_label()<<", " <<"string, \"Time <=PtfmRockTime\""<< ", " << std::endl;
+    ptfm_lock.write_in_file(output_file);
+
     for(const TotalJoint &ttj : total_joints ) {
-        output_file << "driven :"<<ttj.get_label()<<", " <<"string, \"Time <= InitConstraint\""<<std::endl;
+        output_file << "driven :"<<ttj.get_label()<<", " <<"string, \"Time<=InitPtfmDeformContTime\""<< ", " << std::endl;
         ttj.write_in_file(output_file);
     }
+
+    /*
+    output_file << "#----Platform top initial total joint----" <<std::endl;
+    output_file << "driven :"<<platform_label + 500 + 1<<", "<<"string, \"Time<=""0.0125\""<< ", " << std::endl;
+    ptfm_top_joint.write_in_file(output_file);
+    */
 }
 
-int 
+int
 Platform::get_num_nodes() const {
-    // platform nodes + ground
-    return num_nodes + 1 ;
+    // platform nodes + ground + dummynode(2)
+    return num_nodes + 1 +2;
 }
 
-int 
+int
 Platform::get_num_rigid_bodies() const {
     return num_rigidbodies;
 }
 
 int
 Platform::get_num_joints() const {
-    // platform joints + ground
-    return num_total_joints + num_deformable_joints + 1;
+    // platform joints + ground + ptfm lock
+    return num_total_joints + num_deformable_joints + 1 +1;
 }
