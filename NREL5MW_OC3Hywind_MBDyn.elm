@@ -3290,8 +3290,8 @@ joint :3103,
     rotation orientation, reference, 3001,
                             1, 1.00000e+00, 0.00000e+00, 0.00000e+00,
                             3, 0.00000e+00, 0.00000e+00, 1.00000e+00,
-    position constraint,    inactive, inactive, inactive,
-    orientation constraint, inactive, inactive, active, null,
+    position constraint,    active, active, active, null,
+    orientation constraint, active, active, active, null,
     output, 0;
 
 

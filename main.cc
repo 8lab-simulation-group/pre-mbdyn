@@ -19,15 +19,10 @@ int main(int argc, char *argv[]){
     const int blade_label    =10000;
 
     // コンストラクタ内でデータを加工し、mbdynのフォームに会わせてアウトプット可能な形式でデータを保管する
-    std::cout<<"0"<<std::endl;
     Platform platform(platform_label, &inputdata);
-    std::cout<<"1"<<std::endl;
     Tower Tower(tower_label, platform.get_top_reference(), &inputdata);
-    std::cout<<"2"<<std::endl;
     RNA RNA(nacelle_label, Tower.get_top_reference(), &inputdata);
-    std::cout<<"3"<<std::endl;
     Blade Blade1(1, blade_label, RNA.get_top_reference(1), &inputdata);
-    std::cout<<"4"<<std::endl;
     Blade Blade2(2, blade_label + 10000, RNA.get_top_reference(2), &inputdata);
     Blade Blade3(3, blade_label + 20000, RNA.get_top_reference(3), &inputdata);
     output(platform , Tower, RNA, Blade1, Blade2, Blade3);

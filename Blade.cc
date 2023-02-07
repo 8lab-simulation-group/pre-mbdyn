@@ -35,7 +35,7 @@ Blade::Blade(int own_num,int label, const ReferenceFrame &Bladebase, InputData *
 
     // BMass, StiffBF(FlpStff), StiffBEA(EAStff), StiffBE(EdgStff), StiffBGJ(GJStff), FlpIner, EdgInerの線形補間
     // x:BlFract, y:線形補間したい変数
-    std::cout<<"7"<<std::endl;
+    
     for(int i=0; i<num; i++) {
       BldFlexL = inputdata->get_value("TipRad") - inputdata->get_value("HubRad");
       double XVal = (inputdata->get_value("RNodes", i+1) - inputdata->get_value("HubRad"))/BldFlexL;
@@ -240,15 +240,11 @@ Blade::Blade(int own_num,int label, const ReferenceFrame &Bladebase, InputData *
       InterpEdgcgOf[i] = (EdgcgOf2-EdgcgOf1) * (XVal-XAray1)/(XAray2-XAray1) + EdgcgOf1;  
 
     }
-std::cout<<"8"<<std::endl;
+
     set_reference();
-    std::cout<<"9"<<std::endl;
     set_nodes();
-    std::cout<<"10"<<std::endl;
     set_rigidbodies();
-    std::cout<<"11"<<std::endl;
     set_deformablejoint();
-    std::cout<<"12"<<std::endl;
     set_total_joint();
 }
 
@@ -315,56 +311,6 @@ Blade::set_reference() {
         Frame offset_TpBr(i, position_offset_TpBr,e1,e3,velocity_offset, angular_velocity_offset);
         references[i] = ReferenceFrame(blade_label+i+400,bld_base_reference1,offset_TpBr);
         }     
-              // nodeのbld_base_reference2に対する相対座標を計算
-        /*if(i==19) {
-          references[i] = ReferenceFrame(blade_label+i+1,bld_base_reference2,offset_null);
-        }
-        // _P, Aero_M, CM_M, EA_M
-        else if(i>0 && i<num+1) {
-
-        Vec3d positon_offset = Vec3d(0.,0.,inputdata->get_value("RNodes",i) - inputdata->get_value("HubRad"));
-        double theta = inputdata->get_value("AeroTwst",i);
-        //　元の座標系(pitch plate)に対して、３軸周りにthetaだけ回転する
-        //  そして、1軸と3軸を入れ替える
-
-        Vec3d e3(std::cos(theta),std::sin(theta),0.);
-        Vec3d e1(0.,0.,1.);
-        Frame offset(blade_label+i,positon_offset, e1,e3,velocity_offset, angular_velocity_offset);
-        ReferenceFrame Bld_sec_frame(blade_label+i, bld_base_reference1,offset);
-        references[i] = ReferenceFrame(blade_label+i+1,bld_base_reference1,offset);
-        
-        // Aero
-        double z1 = 0.25 - InterpAeroCent[i-1] * inputdata->get_value("Chord",i);
-        Vec3d position_offset_Aero = Vec3d(0.,0.,z1);
-        Vec3d e_1(1.,0.,0.);
-        Vec3d e_3(0.,0.,1.);
-        Frame offset3(i,position_offset_Aero,e_1,e_3, velocity_offset, angular_velocity_offset);
-        references[3*i+15] = ReferenceFrame(blade_label+i+100,references[i],offset3);
-
-        //CM_M  
-        double CMflap = 0.0;
-        double CMedge = -InterpEdgcgOf[i-1]; 
-        Vec3d position_offset_CM = Vec3d(0.,CMflap,CMedge); 
-        Frame offset4(i,position_offset_CM, e_1, e_3, velocity_offset, angular_velocity_offset);
-        references[3*i+16] = ReferenceFrame(blade_label+i+200, references[i],offset4);
-
-        //EA_M
-        double EAflap = 0.0;
-        double EAedge = 0.0;
-        Vec3d position_offset_EA_M = Vec3d(0.,EAflap,EAedge);
-        Frame offset5(i, position_offset_EA_M, e_1,e_3, velocity_offset,angular_velocity_offset);
-        references[3*i+17] = ReferenceFrame(blade_label+i+300, references[i],offset5);
-        }
-        else {
-        Vec3d e1(1.,0.,0.);
-        Vec3d e3(0.,0.,1.);
-        Vec3d position_offset_TpBr = Vec3d(0.,0.,BldFlexL);
-        Frame offset_TpBr(i, position_offset_TpBr,e1,e3,velocity_offset, angular_velocity_offset);
-        references[i] = ReferenceFrame(blade_label+i+400,bld_base_reference1,offset_TpBr);
-        } */    
-      
-      
-      
       
       }
 
@@ -440,7 +386,7 @@ Blade::set_deformablejoint() {
     
     double KBF = 0.0;
     double KBE = 0.0;
-std::cout<<"13"<<std::endl;
+
     for(int j=0; j<num; j++) {
 
       double SHPKBF = 0.0;
@@ -469,12 +415,11 @@ std::cout<<"13"<<std::endl;
       KBF = KBF + ElStffFlp * SHPKBF * SHPKBF;  
       KBE = KBE + ElStffBE * SHPKBE * SHPKBE;  
     }
-std::cout<<"14"<<std::endl;
     //  MBF & MBE
 
     double MBF = 0.0;
     double MBE = 0.0;
-std::cout<<"15"<<std::endl;
+
     for(int j=0; j<num; j++) {
 
       double SHPMBF = 0.0;
@@ -497,7 +442,6 @@ std::cout<<"15"<<std::endl;
       MBF = MBF + ElmntBldMass * SHPMBF * SHPMBF;
       MBE = MBE + ElmntBldMass * SHPMBE * SHPMBE;
     }
-std::cout<<"16"<<std::endl;
     
     double TipMass = 0.0;
     double FreqBF = 0.5/M_PI * sqrt(KBF/(MBF-TipMass));
@@ -507,7 +451,7 @@ std::cout<<"16"<<std::endl;
     double CRatioBEd;
     double CRatioBEA;
     double CRatioBGJ;
-std::cout<<"17"<<std::endl;
+
     for(int i=0; i<num_deformable_joints; i++) {
  
         int curr_node1;
@@ -624,7 +568,7 @@ std::cout<<"17"<<std::endl;
 
         deformable_joints[i] = DeformableJoint(joint_label, curr_node1, curr_node2, joint_position, kMatrix,Cmatrix, 0);
     }
-  std::cout<<"18"<<std::endl;
+
 }
 
 void
