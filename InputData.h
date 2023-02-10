@@ -237,6 +237,7 @@ public:
     ~InputData();
     void print_data();
     double get_value(const std::string &arg_name, int index=-1) ;
+    std::vector<double> get_vector(const std::string &arg_name);
 
 };
 

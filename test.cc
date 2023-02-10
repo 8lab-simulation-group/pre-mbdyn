@@ -3,37 +3,18 @@
 #include "RigidBody.h"
 #include "Joint.h"
 
+std::vector<double> 
+Interplation(const std::vector<double> &xval , const std::vector<double> &xarray, const std::vector<double> &yarray);
+
 int main(){
 
-    Frame ground(0.,zero3,eye3x3,zero3,zero3);
+    std::string input_file = "test/pre-MBDyn.ipt";
 
-    Vec3d offset(1.,2.,3.);
-    Vec3d e1(0.,0.,1);
-    Vec3d e3(1.,0.,0.);
+    InputData inputdata(input_file);
 
-    ReferenceFrame base(1.,ground, Frame(0.,offset, e1,e3,zero3,zero3));
-
-
-    double theta = M_PI/3;
-
-    e1 = Vec3d(std::cos(theta),std::sin(theta),0);
-    e3 = Vec3d(0.,0.,1.);
-
-    Vec3d euler123(0.,0.,theta);
-
-    ReferenceFrame reffrm(2,base, Frame(1.,zero3,e1,e3,zero3,zero3));
-
-    Node node(1, reffrm, 1);
-
-    node.print_node();
-
-    Frame dummy_offset(0.,Vec3d(1.,2.,3), Vec3d(0.,1.,0.), Vec3d(1.,0.,0.),zero3,zero3);
+    std::vector<double> BlFract = inputdata.get_vector("BlFract");
     
-    DummyNode dummy1(2, node, dummy_offset,1);
-    DummyNode dummy2(3, node, offset_null,1);
 
-    dummy1.print_node();
-    dummy2.print_node();
     return 0;
 
 // 検証手順
@@ -47,4 +28,40 @@ int main(){
 // つくられた　.out　の実行形態を実行する
 // ./out
 
+}
+
+std::vector<double> 
+Interplation(const std::vector<double> &xval , const std::vector<double> &xarray, const std::vector<double> &yarray) 
+{
+    if(xarray.size() != yarray.size() ){
+        std::cerr << "The size of xarray and yarray must match in interplation function" << std::endl;
+    }
+
+    std::vector<double> result(xval.size());
+
+    for (int i=0; i < xval.size() ; i++) {
+
+        // check where you should refere to the value in xarray and yarray
+        int range = 0;        
+        while( xval[i] > xarray[range]) {
+            range++;
+            
+            if(range==xarray.size()){
+                break;
+            }
+
+        }
+        if(range==0){
+            result[i] = yarray[range];
+        }
+        else{
+            
+            result[i] = (yarray[range] - yarray[range-1]) * (xval[i] - xarray[range-1])/(xarray[range] - xarray[range-1]) + yarray[range-1]; 
+        }
+        if(range==xarray.size()){
+            result[i] = yarray[range];
+        }
+
+    }
+    return result;
 }

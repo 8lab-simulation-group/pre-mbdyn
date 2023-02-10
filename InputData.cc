@@ -242,6 +242,28 @@ double InputData::get_value(const std::string &arg_name, int index)
     }
 }
 
+std::vector<double> 
+InputData::get_vector(const std::string &arg_name) 
+{
+
+    if (check_contain(v_variables_name, arg_name)) {
+        if(v_variables_map[arg_name]->set) {
+
+            return v_variables_map[arg_name]->value;
+
+        } else {
+            std::cerr<<"The variable '"<<arg_name<<"' is not taken from input file";
+
+            return std::vector<double>(0);
+        }
+    }
+    else {
+        std::cerr<<"The variable name "<<arg_name<<"is invalid in func:get_value of class InputData"<<std::endl;
+        exit(0);
+        return std::vector<double>(0);
+    }
+}
+
 
 void InputData::print_data() {
     for(const std::string &str : i_variables_name) {

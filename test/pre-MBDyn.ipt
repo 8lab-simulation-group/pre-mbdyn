@@ -41,11 +41,11 @@ GBRatio    97.0      #      - Gearbox ratio (-)
 DTTorSpr   867.637e6  #     - Drivetrain torsional spring (N-m/rad)
 DTTorDmp     6.215e6  #     - Drivetrain torsional damper (N-m/(rad/s))
 #---------------------- PLATFORM ------------------------------------------------
-PtfmFile   NREL5MW_OC3Hywind_Ptfm.dat    # PtfmFile    - Name of file containing platform properties 
-PtfmLdFile NREL5MW_OC3Hywind_PtfmLd.ipt  # PtfmLdFile  - Name of file containing platform load properties
+PtfmFile   test/NREL5MW_OC3Hywind_Ptfm.dat    # PtfmFile    - Name of file containing platform properties 
+PtfmLdFile test/NREL5MW_OC3Hywind_PtfmLd.ipt  # PtfmLdFile  - Name of file containing platform load properties
 #---------------------- TOWER ---------------------------------------------------
 TwrNodes  20        #     - Number of tower nodes used for analysis (-)
-TwrFile   NRELOffshrBsline5MW_Tower_OC3Hywind.dat        #      - Name of file containing tower properties 
+TwrFile   test/NRELOffshrBsline5MW_Tower_OC3Hywind.dat        #      - Name of file containing tower properties 
 #---------------------- NACELLE-YAW ---------------------------------------------
 YawSpr   9028.32e6   #       - Nacelle-yaw spring constant (N-m/rad)
 YawDamp     19.16e6   #      - Nacelle-yaw damping constant (N-m/(rad/s))
@@ -57,7 +57,7 @@ HSSLength  1.195    #       - Length of the high-speed shaft CYLINDER used for L
 GenLength  2.39     #       - Length of the generator CYLINDER used for Generator GRAPHICS (m)
 #---------------------- BLADE ---------------------------------------------------
 BldNodes  17        #     - Number of each blade nodes used for analysis (-)
-BldFile   NRELOffshrBsline5MW_Blade.dat                 #   - Name of file containing properties for blade  
+BldFile   test/NRELOffshrBsline5MW_Blade.dat                 #   - Name of file containing properties for blade  
 #---------------------- Blade Aerodyn.ipt---------------------------------------
 RNodes   AeroTwst  DRNodes  Chord 
  2.8667  13.308    2.7333   3.542  
