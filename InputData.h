@@ -185,6 +185,10 @@ private:
         "BldFl1Sh"        ,
         "BldFl2Sh"        ,
         "BldEdgSh"        ,
+        "RNodes"          ,
+        "AeroTwst"        ,
+        "DRNodes"         ,
+        "Chord"           ,
 
         "Seed"            ,
         "CM",

@@ -49,13 +49,14 @@ class  RNA {
     Vec3d PitchPlate2;
     Vec3d PitchPlate3;
 
-    Frame RNA_reference;
-    Frame Bld_base_node1;
-    Frame Bld_base_node2;
-    Frame Bld_base_node3;
+    Node RNA_reference;
+    Node Bld_base_node1;
+    Node Bld_base_node2;
+    Node Bld_base_node3;
     ReferenceFrame Bld_base_reference1;
     ReferenceFrame Bld_base_reference2;
     ReferenceFrame Bld_base_reference3;
+    ReferenceFrame Hub_reference;
     TotalJoint RNA_top_joint;
 
     // Towerを構成するノードとエレメントの変数。vectorで宣言し、後ほど要素数に応じて容量を確保する。
@@ -78,9 +79,11 @@ class  RNA {
     void write_nodes_in(std::ofstream &ofs) const;
     void write_elements_in(std::ofstream &ofs) const;
 
-    const ReferenceFrame get_top_reference() const {return Bld_base_reference1;};
-    //const ReferenceFrame get_top_reference() const {return Bld_base_reference2;};
-    //const ReferenceFrame get_top_reference() const {return Bld_base_reference3;};
+    //const ReferenceFrame get_top_reference() const {return Bld_base_reference1;};
+
+    const ReferenceFrame get_top_reference(int i) const ;
+
+
     int get_num_nodes() const;
     int get_num_rigid_bodies() const;
     int get_num_joints() const;

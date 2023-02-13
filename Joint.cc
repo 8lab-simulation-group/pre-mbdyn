@@ -33,6 +33,14 @@ TotalJoint::TotalJoint(int label, int nodelabel1,  int nodelabel2, const Referen
     init_angular_velocity = angular_v;
 }
 
+TotalJoint::TotalJoint(int label, Node &node1,  Node &node2, const ReferenceFrame &position,const std::string &condition ,int outflg,const Vec3d &angular_v)
+: Joint(label, node1.get_label(), node2.get_label(), position, outflg)
+{
+    constraint_condition = condition;
+    init_angular_velocity = angular_v;
+}
+
+
 TotalJoint::TotalJoint(const TotalJoint &totaljnt)
 : Joint(totaljnt)
 {
@@ -56,7 +64,7 @@ TotalJoint::write_in_file(std::ofstream &ofs) const {
     Vec3d offset_e3 = relative_frame.get_vector_e3();
 
     if(constraint_condition == "Total") {
-        ofs << std::scientific<<std::setprecision(5) << std::endl
+        ofs << std::scientific<<std::setprecision(5)
             << "joint :" << elem_label << "," <<std::endl
             << "    total joint," << std::endl
             << "    " << node_label[0] << "," <<std::endl
@@ -79,8 +87,36 @@ TotalJoint::write_in_file(std::ofstream &ofs) const {
             << "    orientation constraint, active, active, active, null," <<std::endl
             << "    output, " << out_flg << ";"<<std::endl<<std::endl;
 
-    } else if (constraint_condition == "Angular Velocity") {
-        ofs << std::scientific<<std::setprecision(5) << std::endl
+    } 
+    else if (constraint_condition == "Angular Velocity") {
+        ofs << std::scientific<<std::setprecision(5) 
+            << "joint :" << elem_label << "," <<std::endl
+            << "    total joint," << std::endl
+            << "    " << node_label[0] << "," <<std::endl
+            << "    position,             reference, " << base_label << ", "<<offset_position << ","<< std::endl
+            << "    position orientation, reference, " << base_label << "," << std::endl
+            << "                            1, " << offset_e1 << "," <<std::endl
+            << "                            3, " << offset_e3 << "," <<std::endl
+            << "    rotation orientation, reference, " << base_label << "," << std::endl
+            << "                            1, " << offset_e1 << "," <<std::endl
+            << "                            3, " << offset_e3 << "," <<std::endl
+            << "    " << node_label[1] << "," <<std::endl
+            << "    position,             reference, " << base_label << ", "<<offset_position << ","<< std::endl
+            << "    position orientation, reference, " << base_label << "," << std::endl
+            << "                            1, " << offset_e1 << "," <<std::endl
+            << "                            3, " << offset_e3 << "," <<std::endl
+            << "    rotation orientation, reference, " << base_label << "," << std::endl
+            << "                            1, " << offset_e1 << "," <<std::endl
+            << "                            3, " << offset_e3 << "," <<std::endl
+            << "    position constraint,    inactive, inactive, inactive, null," <<std::endl
+            << "    orientation constraint, inactive, inactive, angular velocity," <<std::endl
+            << "    component, const, 0.0 , const, 0.0,"<<std::endl
+            << "               drive, string, \"-Var\","<<std::endl
+            << "               cosine, 0.0, pi/InitRotSpdContTime,"<<init_angular_velocity[2]<<"/2.0,half,0.,"<<std::endl
+            << "    output, " << out_flg << ";"<<std::endl<<std::endl;        
+    }
+    else if (constraint_condition == "BearingLock") {
+        ofs << std::scientific<<std::setprecision(5)
             << "joint :" << elem_label << "," <<std::endl
             << "    total joint," << std::endl
             << "    " << node_label[0] << "," <<std::endl
@@ -101,7 +137,7 @@ TotalJoint::write_in_file(std::ofstream &ofs) const {
             << "                            3, " << offset_e3 << "," <<std::endl
             << "    position constraint,    inactive, inactive, inactive, null," <<std::endl
             << "    orientation constraint, inactive, inactive, active," <<std::endl
-            << "    component, const, "<<init_angular_velocity[0]<<", const, "<<init_angular_velocity<<", const, "<<init_angular_velocity[2]<<","<<std::endl
+            << "    null,"<<std::endl
             << "    output, " << out_flg << ";"<<std::endl<<std::endl;        
     }
 }   
@@ -126,7 +162,7 @@ TotalJoint::print_element() const{
                  <<"positon constraint, active, active, active, null"<<std::endl
                  <<"orientation constraint, active, active, active, null"<<std::endl<<std::endl;
 
-    }else if(constraint_condition=="Anglar Velocity") {
+    }else if(constraint_condition=="Angular Velocity") {
 
         std::cout<<"joint label :"<<elem_label<<std::endl
                  <<"total joint"<<std::endl
@@ -148,6 +184,11 @@ TotalJoint::print_element() const{
 // -----------------------definition of Revolutehinge------------------------------
 RevoluteJoint::RevoluteJoint(int label, int nodelabel1,  int nodelabel2, const ReferenceFrame &position, const double inittheta,int outflg )
 : Joint(label, nodelabel1, nodelabel2, position, outflg) {
+    init_theta = inittheta;
+};
+
+RevoluteJoint::RevoluteJoint(int label, Node &node1,     Node &node2,    const ReferenceFrame &position, const double inittheta, int outflg )
+: Joint(label, node1.get_label(), node2.get_label(), position, outflg) {
     init_theta = inittheta;
 };
 
@@ -286,6 +327,13 @@ DeformableHinge::DeformableHinge(int label, int nodelabel1,  int nodelabel2, con
     dumper_coefficient = C;
 }
 
+DeformableHinge::DeformableHinge(int label, Node &node1, Node &node2, const ReferenceFrame &position, const double K, const double C, int outflg ) 
+: Joint(label, node1.get_label(), node2.get_label(), position, outflg) 
+{
+    spring_coefficient = K;
+    dumper_coefficient = C;
+}
+
 DeformableHinge::DeformableHinge(const DeformableHinge &deformablehinge) 
 : Joint(deformablehinge)
 {
@@ -311,7 +359,7 @@ DeformableHinge::write_in_file(std::ofstream &ofs) const {
 
     ofs << std::scientific<<std::setprecision(5)
         << "joint :" << elem_label << "," <<std::endl
-        << "    revolute hinge," << std::endl
+        << "    deformable hinge," << std::endl
         << "    " << node_label[0] << "," <<std::endl
         << "    position,    reference, " << base_label << ", "<<offset_position << ","<< std::endl
         << "    orientation, reference, " << base_label << ","   << std::endl

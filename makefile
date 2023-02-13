@@ -5,10 +5,22 @@ CFLAGS    = -std=c++1z
 # (3)実行ファイル名
 TARGET  = pre-mbdyn
 # (4)コンパイル対象のソースコード
-SRCS    = InputData.cc
+SRCS     = Vec3d.cc
+SRCS    += Frame.cc
+SRCS    += ReferenceFrame.cc
+SRCS    += Node.cc
+SRCS    += DummyNode.cc
+SRCS    += Element.cc
+SRCS    += RigidBody.cc
+SRCS    += Joint.cc
+SRCS    += Platform.cc
+SRCS    += Tower.cc
+SRCS    += Nacelle.cc
+SRCS    += Blade.cc
 SRCS    += main.cc
+SRCS    += InputData.cc
 # (5)オブジェクトファイル名
-OBJS    = $(SRCS:.cpp=.o)
+OBJS    = $(SRCS:.cc=.o)
  
 # (6)インクルードファイルのあるディレクトリパス
 INCDIR  = -I../inc
@@ -32,3 +44,7 @@ all: clean $(OBJS) $(TARGET)
 # (12).oファイル、実行ファイル、.dファイルを削除
 clean:
 	-rm -f $(OBJS) $(TARGET) *.d
+
+install:
+	mkdir -p $(DESTDIR)/usr/bin
+	install -m 0755 pre-mbdyn $(DESTDIR)/usr/bin

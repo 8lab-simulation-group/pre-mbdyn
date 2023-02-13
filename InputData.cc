@@ -236,7 +236,7 @@ double InputData::get_value(const std::string &arg_name, int index)
         }
     }
     else {
-        std::cerr<<"The variable name is invalid in func:get_value of class InputData"<<std::endl;
+        std::cerr<<"The variable name "<<arg_name<<"is invalid in func:get_value of class InputData"<<std::endl;
         exit(0);
         return -1;
     }

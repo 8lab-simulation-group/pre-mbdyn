@@ -17,6 +17,7 @@ Platform::Platform(int label, InputData *ID)
     rigidbodies.resize(num_rigidbodies);
     deformable_joints.resize(num_deformable_joints);
     total_joints.resize(num_total_joints);
+    dummy.resize(2);
 
     // surge等の初期値を取得
     init_displacement = Vec3d(inputdata->get_value("PtfmSurge"), inputdata->get_value("PtfmSway"), inputdata->get_value("PtfmHeave"));
@@ -87,6 +88,15 @@ Platform::set_nodes(){
         // node classのvector配列のメンバ変数に保存
         nodes[i] = Node(curr_node_label, references[i], offset_null, 1);
     }
+    //dummynode for output
+    Vec3d position(-1.250,0.,0.);
+    Vec3d e1(0.,0.,1.);
+    Vec3d e3(1.,0.,0.);
+
+    dummy[0] = DummyNode(100, nodes[2], Frame(0.,position, e1, e3, zero3, zero3), 1);
+
+
+    dummy[1] = DummyNode(150, nodes[20], nodes[20].get_reference(), 1);
 }
 
 void
@@ -413,6 +423,12 @@ Platform::set_deformablejoint() {
 
 void
 Platform::set_total_joint() {
+
+    int node1 = 1;
+    int node2 = nodes[2].get_label();
+
+    ptfm_lock = TotalJoint(100, node1, node2, ReferenceFrame(100,ptfm_reference,offset_null), "Total", 0);
+
     for(int i=0; i<num_total_joints; i++) {
         //連続するnodeをtotal jointで拘束、解析初期時間が終わると拘束を開放する。
 
@@ -444,9 +460,10 @@ Platform::write_reference_in(std::ofstream &output_file) const {
     for(const ReferenceFrame &flm : references) {
         flm.write_reference(output_file);
     }
-
+    /*
     output_file<<"#-----Platform Top Reference------"<<std::endl;
     ptfm_top_reference.write_reference(output_file);
+    */
 }
 
 void
@@ -459,38 +476,53 @@ Platform::write_nodes_in(std::ofstream &output_file) const {
         nod.write_node(output_file);
     }
 
-    output_file << "#----Platform top node----" << std::endl;
-    ptfm_top_node.write_node(output_file);
+    output_file << "#----Platform dummy node ----" << std::endl;
+    for(const DummyNode &dm : dummy) {
+      dm.write_node(output_file);
+    }
+}
+
+
+void
+Platform::write_rigidbodies_in(std::ofstream &output_file) const {
+    output_file << "#----Platfrom Rigid Bodies-----" <<std::endl;
+    int i=1;
+    for(const RigidBody &rbd : rigidbodies){
+        output_file<<"# platform section "<<i<<std::endl;
+        rbd.write_in_file(output_file);
+        i++;
+    }
 }
 
 void
-Platform::write_elements_in(std::ofstream &output_file) const {
+Platform::write_joints_in(std::ofstream &output_file) const {
     output_file << "#----Ground Clamp Joint -------" <<std::endl;
     ground_joint.write_in_file(output_file);
 
-    output_file << "#----Platfrom Rigid Bodies-----" <<std::endl;
-    for(const RigidBody &rbd : rigidbodies){
-        rbd.write_in_file(output_file);
-    }
     output_file << "#----Platfrom defomable joint-----" <<std::endl;
     for(const DeformableJoint &dfj : deformable_joints) {
         dfj.write_in_file(output_file);
     }
     output_file << "#----Platfrom initial total joint-----" <<std::endl;
+    output_file << "driven :"<<ptfm_lock.get_label()<<", " <<"string, \"Time <=PtfmRockTime\""<< ", " << std::endl;
+    ptfm_lock.write_in_file(output_file);
+
     for(const TotalJoint &ttj : total_joints ) {
-        output_file << "driven :"<<ttj.get_label()<<", " <<"string, \"Time <="" 0.0125\""<< ", " << std::endl;
+        output_file << "driven :"<<ttj.get_label()<<", " <<"string, \"Time<=InitPtfmDeformContTime\""<< ", " << std::endl;
         ttj.write_in_file(output_file);
     }
 
+    /*
     output_file << "#----Platform top initial total joint----" <<std::endl;
     output_file << "driven :"<<platform_label + 500 + 1<<", "<<"string, \"Time<=""0.0125\""<< ", " << std::endl;
     ptfm_top_joint.write_in_file(output_file);
+    */
 }
 
 int
 Platform::get_num_nodes() const {
-    // platform nodes + ground
-    return num_nodes + 1 ;
+    // platform nodes + ground + dummynode(2)
+    return num_nodes + 1 +2;
 }
 
 int
@@ -500,6 +532,6 @@ Platform::get_num_rigid_bodies() const {
 
 int
 Platform::get_num_joints() const {
-    // platform joints + ground
-    return num_total_joints + num_deformable_joints + 1;
+    // platform joints + ground + ptfm lock
+    return num_total_joints + num_deformable_joints + 1 +1;
 }
